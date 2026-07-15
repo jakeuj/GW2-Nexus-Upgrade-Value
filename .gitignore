@@ -1,0 +1,43 @@
+# Visual Studio / MSBuild
+.vs/
+obj/
+*.user
+*.suo
+*.VC.db
+*.VC.VC.opendb
+
+# Keep the release DLL, ignore other linker/debug artifacts.
+bin/*
+!bin/Release/
+bin/Release/*
+!bin/Release/UpgradeValue.dll
+
+# Runtime settings and secrets are created by Nexus outside this repository.
+settings.json
+addons/
+
+# Keep only files required to build from the vendored dependencies.
+vendor/imgui/*
+!vendor/imgui/LICENSE.txt
+!vendor/imgui/imconfig.h
+!vendor/imgui/imgui.h
+!vendor/imgui/imgui_internal.h
+!vendor/imgui/imstb_rectpack.h
+!vendor/imgui/imstb_textedit.h
+!vendor/imgui/imstb_truetype.h
+!vendor/imgui/imgui.cpp
+!vendor/imgui/imgui_draw.cpp
+!vendor/imgui/imgui_tables.cpp
+!vendor/imgui/imgui_widgets.cpp
+
+vendor/nexus/*
+!vendor/nexus/LICENSE
+!vendor/nexus/Nexus.h
+
+vendor/nlohmann_json/*
+!vendor/nlohmann_json/LICENSE.MIT
+!vendor/nlohmann_json/single_include/
+vendor/nlohmann_json/single_include/*
+!vendor/nlohmann_json/single_include/nlohmann/
+vendor/nlohmann_json/single_include/nlohmann/*
+!vendor/nlohmann_json/single_include/nlohmann/json.hpp
