@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jakeuj.github.io/GW2-Nexus-Upgrade-Value/sitemap.xml
+Sitemap: https://gw2-value.jakeuj.com/sitemap.xml
