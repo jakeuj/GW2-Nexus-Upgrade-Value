@@ -73,13 +73,13 @@ extern "C" __declspec(dllexport) AddonDefinition* GetAddonDef()
     Definition.Signature = AddonSignature;
     Definition.APIVersion = NEXUS_API_VERSION;
     Definition.Name = "Upgrade Value";
-    Definition.Version = {1, 0, 2, 0};
+    Definition.Version = {1, 0, 3, 0};
     Definition.Author = "jakeuj";
     Definition.Description = "Find embedded runes and sigils in Exotic gear and compare live Trading Post prices.";
     Definition.Load = Load;
     Definition.Unload = Unload;
     Definition.Flags = EAddonFlags_None;
-    Definition.Provider = EUpdateProvider_None;
-    Definition.UpdateLink = nullptr;
+    Definition.Provider = EUpdateProvider_GitHub;
+    Definition.UpdateLink = "https://github.com/jakeuj/GW2-Nexus-Upgrade-Value";
     return &Definition;
 }

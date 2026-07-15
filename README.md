@@ -5,18 +5,21 @@
 
 在遊戲內掃描帳號中的橘色裝備（`Exotic`），列出內嵌的符文、印記與即時 Trading Post 價格，用來判斷是否值得消耗黑獅分解工具。
 
-目前正式版：[**v1.0.2**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.2)
+目前正式版：[**v1.0.3**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.3)
 
 專案網站：[gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
 
 ## 下載
 
 - [直接下載 `UpgradeValue.dll`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
-- [下載 `UpgradeValue-v1.0.2.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.2/UpgradeValue-v1.0.2.zip)
+- [下載 `UpgradeValue-v1.0.3.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.3/UpgradeValue-v1.0.3.zip)
 - [查看所有版本與更新內容](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
 
 > [!IMPORTANT]
 > 將 `UpgradeValue.dll` 放在 Guild Wars 2 的 `addons` 根目錄；請勿放進 `addons\Nexus` 子資料夾。
+
+> [!NOTE]
+> `v1.0.3` 起支援 Nexus 透過 GitHub Releases 檢查及安裝後續版本。`v1.0.2` 或更舊版本無法自行發現這項更新，必須先手動安裝 `v1.0.3` 一次；之後是否自動更新由使用者的 Nexus 更新設定決定。
 
 ## 作者
 
@@ -115,7 +118,7 @@ msbuild UpgradeValue.sln /m /p:Configuration=Release /p:Platform=x64
 ## CI/CD 與發行
 
 - [Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml) 會在推送到 `main` 或建立 Pull Request 時，自動執行 Windows x64 Release 建置並上傳 Artifact。
-- 推送符合 `v*` 的 tag（例如 `v1.0.2`）時，會自動建立 GitHub Release，並附上 DLL 與 ZIP。
+- 推送符合 `v*` 的 tag（例如 `v1.0.3`）時，會自動建立 GitHub Release，並附上 DLL 與 ZIP。
 - 也可以從 **Actions → Build and release → Run workflow** 輸入版本號手動發行；版本必須與 `src/entry.cpp` 的插件版本一致。
 - GitHub Release Notes 會根據此次發行包含的 commits 自動產生。
 
