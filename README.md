@@ -5,7 +5,18 @@
 
 在遊戲內掃描帳號中的橘色裝備（`Exotic`），列出內嵌的符文、印記與即時 Trading Post 價格，用來判斷是否值得消耗黑獅分解工具。
 
-目前版本：`1.0.2`
+目前正式版：[**v1.0.2**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.2)
+
+專案網站：[jakeuj.github.io/GW2-Nexus-Upgrade-Value](https://jakeuj.github.io/GW2-Nexus-Upgrade-Value/)
+
+## 下載
+
+- [直接下載 `UpgradeValue.dll`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
+- [下載 `UpgradeValue-v1.0.2.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.2/UpgradeValue-v1.0.2.zip)
+- [查看所有版本與更新內容](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
+
+> [!IMPORTANT]
+> 將 `UpgradeValue.dll` 放在 Guild Wars 2 的 `addons` 根目錄；請勿放進 `addons\Nexus` 子資料夾。
 
 ## 作者
 
@@ -52,7 +63,7 @@
 ## 安裝
 
 1. 安裝 [Raidcore Nexus](https://raidcore.gg/gw2/nexus)。
-2. 到 [Releases](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest) 下載 `UpgradeValue.dll` 或 ZIP 壓縮檔。
+2. 從上方「下載」區取得 `UpgradeValue.dll`，或到 [最新 Release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest) 下載 ZIP 壓縮檔。
 3. 將 DLL 複製到 GW2 的 `addons` 根目錄，例如：
 
    ```text
@@ -103,7 +114,7 @@ msbuild UpgradeValue.sln /m /p:Configuration=Release /p:Platform=x64
 
 ## CI/CD 與發行
 
-- 推送到 `main` 或建立 Pull Request 時，GitHub Actions 會自動執行 Windows x64 Release 建置並上傳 Artifact。
+- [Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml) 會在推送到 `main` 或建立 Pull Request 時，自動執行 Windows x64 Release 建置並上傳 Artifact。
 - 推送符合 `v*` 的 tag（例如 `v1.0.2`）時，會自動建立 GitHub Release，並附上 DLL 與 ZIP。
 - 也可以從 **Actions → Build and release → Run workflow** 輸入版本號手動發行；版本必須與 `src/entry.cpp` 的插件版本一致。
 - GitHub Release Notes 會根據此次發行包含的 commits 自動產生。
