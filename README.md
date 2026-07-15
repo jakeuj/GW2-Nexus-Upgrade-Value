@@ -7,6 +7,8 @@
 
 目前正式版：[**v1.0.2**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.2)
 
+專案網站：[jakeuj.github.io/GW2-Nexus-Upgrade-Value](https://jakeuj.github.io/GW2-Nexus-Upgrade-Value/)
+
 ## 下載
 
 - [直接下載 `UpgradeValue.dll`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
