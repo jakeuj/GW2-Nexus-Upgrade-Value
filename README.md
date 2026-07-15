@@ -1,5 +1,8 @@
 # Upgrade Value — GW2 Nexus Addon
 
+[![Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/jakeuj/GW2-Nexus-Upgrade-Value)](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest)
+
 在遊戲內掃描帳號中的橘色裝備（`Exotic`），列出內嵌的符文、印記與即時 Trading Post 價格，用來判斷是否值得消耗黑獅分解工具。
 
 目前版本：`1.0.2`
@@ -49,7 +52,7 @@
 ## 安裝
 
 1. 安裝 [Raidcore Nexus](https://raidcore.gg/gw2/nexus)。
-2. 取得 [`bin/Release/UpgradeValue.dll`](bin/Release/UpgradeValue.dll)。
+2. 到 [Releases](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest) 下載 `UpgradeValue.dll` 或 ZIP 壓縮檔。
 3. 將 DLL 複製到 GW2 的 `addons` 根目錄，例如：
 
    ```text
@@ -97,6 +100,13 @@ msbuild UpgradeValue.sln /m /p:Configuration=Release /p:Platform=x64
 輸出檔：`bin/Release/UpgradeValue.dll`
 
 專案已附帶建置需要的 Nexus API header、Raidcore ImGui fork 與 nlohmann/json。
+
+## CI/CD 與發行
+
+- 推送到 `main` 或建立 Pull Request 時，GitHub Actions 會自動執行 Windows x64 Release 建置並上傳 Artifact。
+- 推送符合 `v*` 的 tag（例如 `v1.0.2`）時，會自動建立 GitHub Release，並附上 DLL 與 ZIP。
+- 也可以從 **Actions → Build and release → Run workflow** 輸入版本號手動發行；版本必須與 `src/entry.cpp` 的插件版本一致。
+- GitHub Release Notes 會根據此次發行包含的 commits 自動產生。
 
 ## 資料來源與安全性
 
