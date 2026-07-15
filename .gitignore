@@ -6,11 +6,8 @@ obj/
 *.VC.db
 *.VC.VC.opendb
 
-# Keep the release DLL, ignore other linker/debug artifacts.
-bin/*
-!bin/Release/
-bin/Release/*
-!bin/Release/UpgradeValue.dll
+# Build output is published by GitHub Actions.
+bin/
 
 # Runtime settings and secrets are created by Nexus outside this repository.
 settings.json

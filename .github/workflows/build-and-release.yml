@@ -1,0 +1,164 @@
+name: Build and release
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version, for example v1.0.2"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  SOLUTION_FILE: UpgradeValue.sln
+  DLL_PATH: bin/Release/UpgradeValue.dll
+  ARTIFACT_NAME: UpgradeValue
+
+jobs:
+  build:
+    name: Build DLL and publish release
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Resolve build version
+        id: version
+        shell: pwsh
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+          REF_NAME: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          $isRelease = $env:REF_TYPE -eq "tag" -or $env:EVENT_NAME -eq "workflow_dispatch"
+
+          if ($env:REF_TYPE -eq "tag") {
+            $version = $env:REF_NAME
+          } elseif ($env:EVENT_NAME -eq "workflow_dispatch") {
+            $version = $env:INPUT_VERSION.Trim()
+            if (-not $version.StartsWith("v")) {
+              $version = "v$version"
+            }
+          } else {
+            $shortSha = $env:COMMIT_SHA.Substring(0, 7)
+            $version = "ci-$env:RUN_NUMBER-$shortSha"
+          }
+
+          if ($isRelease -and $version -notmatch '^v\d+\.\d+\.\d+([-.][0-9A-Za-z.-]+)?$') {
+            throw "Release version '$version' must use a vX.Y.Z semantic version."
+          }
+
+          if ($isRelease) {
+            $source = Get-Content "src/entry.cpp" -Raw
+            $match = [regex]::Match($source, 'Definition\.Version\s*=\s*\{\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,')
+            if (-not $match.Success) {
+              throw "Could not read the addon version from src/entry.cpp."
+            }
+
+            $sourceVersion = "$($match.Groups[1].Value).$($match.Groups[2].Value).$($match.Groups[3].Value)"
+            $tagVersion = $version.Substring(1).Split('-')[0]
+            if ($tagVersion -ne $sourceVersion) {
+              throw "Release version '$version' does not match addon version '$sourceVersion'."
+            }
+          }
+
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "is_release=$($isRelease.ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "RELEASE_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build Release x64
+        shell: pwsh
+        run: |
+          msbuild "$env:SOLUTION_FILE" `
+            /p:Configuration=Release `
+            /p:Platform=x64 `
+            /m `
+            /nologo `
+            /verbosity:minimal
+
+      - name: Verify DLL output
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "$env:DLL_PATH")) {
+            throw "Expected DLL was not found at '$env:DLL_PATH'."
+          }
+
+          $dll = Get-Item "$env:DLL_PATH"
+          if ($dll.Length -eq 0) {
+            throw "Built DLL is empty."
+          }
+
+          $hash = Get-FileHash "$env:DLL_PATH" -Algorithm SHA256
+          $dll | Format-List FullName,Length,LastWriteTime
+          $hash | Format-List Algorithm,Hash
+
+      - name: Package DLL
+        id: package
+        shell: pwsh
+        run: |
+          $zipName = "$env:ARTIFACT_NAME-$env:RELEASE_VERSION.zip"
+          $zipPath = Join-Path $env:RUNNER_TEMP $zipName
+
+          Compress-Archive -Path "$env:DLL_PATH" -DestinationPath $zipPath -Force
+
+          "zip_path=$zipPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "zip_name=$zipName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ env.ARTIFACT_NAME }}-${{ steps.version.outputs.version }}
+          path: |
+            ${{ env.DLL_PATH }}
+            ${{ steps.package.outputs.zip_path }}
+
+      - name: Create tag for manual release
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch --tags --force
+          $existingTag = git tag --list "$env:VERSION"
+          if (-not [string]::IsNullOrWhiteSpace($existingTag)) {
+            throw "Tag $env:VERSION already exists."
+          }
+
+          git tag -a "$env:VERSION" -m "Release $env:VERSION"
+          git push origin "$env:VERSION"
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.is_release == 'true'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          ZIP_NAME: ${{ steps.package.outputs.zip_name }}
+          ZIP_PATH: ${{ steps.package.outputs.zip_path }}
+        run: |
+          gh release create "$env:VERSION" `
+            "$env:DLL_PATH#UpgradeValue.dll" `
+            "$env:ZIP_PATH#$env:ZIP_NAME" `
+            --verify-tag `
+            --title "$env:VERSION" `
+            --generate-notes
