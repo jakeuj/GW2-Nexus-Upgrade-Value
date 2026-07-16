@@ -31,6 +31,7 @@
       </a>
       <nav aria-label="頁面導覽">
         <a href="#features">功能</a>
+        <a href="#review">送審</a>
         <a href="#screenshots">畫面</a>
         <a href="#install">安裝</a>
         <a href="#download">下載</a>
@@ -41,7 +42,7 @@
       <section class="hero" aria-labelledby="page-title">
         <div class="hero-copy">
           <p class="eyebrow">Guild Wars 2 · Nexus Addon</p>
-          <div class="status-pill"><span aria-hidden="true"></span>正式版 v1.0.3</div>
+          <div class="status-pill"><span aria-hidden="true"></span>穩定版 v1.0.3</div>
           <h1 id="page-title">先看價值，<br><em>再決定怎麼拆。</em></h1>
           <p class="lead">
             掃描帳號中的橘色裝備，找出內嵌符文與印記，並比較即時交易所價格。高價升級值得留給黑獅分解工具，低價升級就不必浪費次數。
@@ -50,7 +51,7 @@
             <a class="button primary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll">下載最新版 DLL <span aria-hidden="true">↓</span></a>
             <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value">查看 GitHub</a>
           </div>
-          <p class="download-note">Windows x64 · 需要 Raidcore Nexus · 免費開源</p>
+          <p class="download-note">Windows x64 · 需要 Raidcore Nexus · 社群插件 · 免費開源</p>
           <dl class="quick-stats" aria-label="插件重點">
             <div><dt>即時</dt><dd>Trading Post 價格</dd></div>
             <div><dt>50s</dt><dd>預設黑獅門檻</dd></div>
@@ -113,6 +114,57 @@
         </div>
       </section>
 
+      <section id="review" class="review-section" aria-labelledby="review-title">
+        <div class="review-heading">
+          <p class="eyebrow">Nexus Addon Library</p>
+          <h2 id="review-title">送審資料已準備，<br>尚未列入官方 Addon Library</h2>
+          <p>
+            Upgrade Value 已有可公開下載的穩定版本，目前準備送交 Raidcore 政策與 Guild Wars 2 ToS 審核。GitHub Release 不等於官方資料庫上架，在 Raidcore 明確確認前，本專案不宣稱已核准或符合 ToS。
+          </p>
+        </div>
+
+        <div class="review-status" role="note" aria-label="目前 Nexus 送審狀態">
+          <span class="review-status-dot" aria-hidden="true"></span>
+          <div>
+            <strong>目前狀態：準備送交 Raidcore 審核</strong>
+            <p>穩定版 v1.0.3 可手動安裝，但尚未列入 Nexus 官方 Addon Library。</p>
+          </div>
+        </div>
+
+        <div class="review-grid">
+          <article>
+            <span class="card-number">01</span>
+            <h3>只用公開 API</h3>
+            <p>遊戲內整合使用公開 Nexus API；帳號與價格資料只從 Guild Wars 2 官方 v2 API 讀取。</p>
+          </article>
+          <article>
+            <span class="card-number">02</span>
+            <h3>沒有逆向工程</h3>
+            <p>不讀寫遊戲記憶體，不含 Hook、特徵碼掃描、封包攔截、輸入模擬或遊戲操作自動化。</p>
+          </article>
+          <article>
+            <span class="card-number">03</span>
+            <h3>隱私與安全</h3>
+            <p>沒有遙測或開發者後端；API Key 以 Windows DPAPI 加密，連線目的地與儲存行為皆已公開。</p>
+          </article>
+          <article>
+            <span class="card-number">04</span>
+            <h3>AI Notice</h3>
+            <p>Codex 曾協助專案文件與開發審查；所有輸出均由開發者檢查，並由開發者負責測試、維護與合規。</p>
+          </article>
+        </div>
+
+        <div class="review-actions" aria-label="Nexus 審核資料">
+          <a class="button primary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.md">Review notes (English)</a>
+          <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.zh-Hant.md">繁中審核說明</a>
+          <a class="button secondary" href="https://raidcore.gg/gw2/addon-policy">Raidcore Addon Policy</a>
+        </div>
+
+        <p class="policy-note">
+          本頁的技術說明用於協助 Raidcore 審核，不代表 ArenaNet 或 Raidcore 核准。ArenaNet 表示不會審查、核准或背書個別第三方程式，使用風險由玩家自行承擔。<a href="https://help.guildwars2.com/hc/en-us/articles/360013625034-Policy-Third-Party-Programs">查看 ArenaNet 第三方程式政策</a>
+        </p>
+      </section>
+
       <section id="screenshots" class="section screenshots" aria-labelledby="screenshots-title">
         <div class="section-heading compact">
           <p class="eyebrow">實際畫面</p>
@@ -173,6 +225,7 @@
       <div>
         <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value">GitHub</a>
         <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases">Releases</a>
+        <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.md">Review notes</a>
         <a href="https://raidcore.gg/gw2/nexus">Raidcore Nexus</a>
       </div>
     </footer>
