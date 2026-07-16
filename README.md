@@ -1,143 +1,156 @@
 # Upgrade Value — GW2 Nexus Addon
 
+**English** · [繁體中文](README.zh-Hant.md)
+
 [![Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml)
 [![GitHub Release](https://img.shields.io/github/v/release/jakeuj/GW2-Nexus-Upgrade-Value)](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest)
 
-在遊戲內掃描帳號中的橘色裝備（`Exotic`），列出內嵌的符文、印記與即時 Trading Post 價格，用來判斷是否值得消耗黑獅分解工具。
+Scan Exotic equipment across your Guild Wars 2 account, list embedded runes and sigils with live Trading Post prices, and decide whether they are worth extracting with a Black Lion Salvage Kit.
 
-目前正式版：[**v1.0.3**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.3)
+Current stable release: [**v1.0.3**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.3)
 
-專案網站：[gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
+Project website: [gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
 
-## 下載
+## Nexus submission review
 
-- [直接下載 `UpgradeValue.dll`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
-- [下載 `UpgradeValue-v1.0.3.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.3/UpgradeValue-v1.0.3.zip)
-- [查看所有版本與更新內容](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
+For Raidcore Nexus reviewers, see the [Nexus submission review notes](NEXUS_REVIEW.md).
 
-> [!IMPORTANT]
-> 將 `UpgradeValue.dll` 放在 Guild Wars 2 的 `addons` 根目錄；請勿放進 `addons\Nexus` 子資料夾。
+The short version: this project contains no reverse-engineered code, no private first-party component, no game-memory access, and no gameplay automation. Guild Wars 2 data is read only through the official v2 API, while in-game integration is limited to the public Nexus API. The review notes document the complete API, network, storage, lifecycle, and ToS-relevant surface for independent verification.
+
+Codex assisted with project documentation and development review. This assistance is disclosed for Raidcore's **AI Notice** category; the developer remains responsible for reviewing, testing, maintaining, and submitting the addon.
 
 > [!NOTE]
-> `v1.0.3` 起支援 Nexus 透過 GitHub Releases 檢查及安裝後續版本。`v1.0.2` 或更舊版本無法自行發現這項更新，必須先手動安裝 `v1.0.3` 一次；之後是否自動更新由使用者的 Nexus 更新設定決定。
+> This technical summary is provided to make review easier. It does not claim ArenaNet approval or replace the final ToS assessment by Nexus reviewers.
 
-## 作者
+## Download
 
-- GitHub：[@jakeuj](https://github.com/jakeuj)
-- Guild Wars 2 ID：`jakeuj.5260`
-- 完整資訊：[AUTHORS.md](AUTHORS.md)
+- [Download `UpgradeValue.dll` directly](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
+- [Download `UpgradeValue-v1.0.3.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.3/UpgradeValue-v1.0.3.zip)
+- [View all releases and release notes](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
 
-## 實際畫面
+> [!IMPORTANT]
+> Place `UpgradeValue.dll` in the Guild Wars 2 `addons` root directory. Do not place it inside the `addons\Nexus` subdirectory.
 
-### 升級價格與分解建議
+> [!NOTE]
+> Starting with `v1.0.3`, Nexus can check GitHub Releases for later versions and install them. Versions `v1.0.2` and earlier cannot discover this update automatically, so you must manually install `v1.0.3` once. Future automatic updates depend on the user's Nexus update settings.
 
-![Upgrade Value 主視窗](screenshots/upgrade-value-main.png)
+## Author
 
-主視窗會列出內嵌升級、所在裝備與位置，以及立即賣、最低掛單和扣除 15% 交易所費用後的掛單價值。
+- GitHub: [@jakeuj](https://github.com/jakeuj)
+- Guild Wars 2 ID: `jakeuj.5260`
+- Full details: [AUTHORS.md](AUTHORS.md)
 
-### Nexus 設定
+## Screenshots
 
-![Upgrade Value Nexus 設定](screenshots/upgrade-value-settings.png)
+### Upgrade values and salvage recommendations
 
-可在 Nexus 設定中輸入 API Key、開啟繁體中文、選擇是否顯示灌注，並調整快捷鍵。
+![Upgrade Value main window](screenshots/upgrade-value-main.png)
 
-## 功能
+The main window lists embedded upgrades, their equipment and location, instant-sell prices, lowest listings, and listing values after the 15% Trading Post fee.
 
-- 掃描帳號銀行、共享物品欄、所有角色背包及目前裝備。
-- 從物品實例的 `upgrades[]` 讀取內嵌符文／印記。
-- 中文模式會使用官方 API 的 `lang=zh` 名稱，再以 Windows 轉換為繁體中文；英文模式則使用官方英文名稱。
-- 批次查詢官方 `/v2/commerce/prices`：
-  - `立即賣`：目前最高收購價。
-  - `掛單`：目前最低出售價。
-  - `扣稅掛單`：扣除 15% 交易所費用後的估值。
-- 可設定黑獅分解門檻，預設 50 銀。
-- 清楚標示不可分解、沒有交易所價格，以及不應分解的傳奇裝備。
-- 可選擇顯示灌注價格；灌注不會被黑獅分解工具取回，因此永遠不會建議用黑獅處理。
-- API Key 以 Windows DPAPI 加密後才寫入本機，不以明文保存。
-- 所有網路請求均在背景執行，不阻塞遊戲畫面。
-- 使用 Nexus `FONT_DEFAULT` 的完整中文字形範圍，避免繁中文字被顯示成 `?`。
+### Nexus settings
 
-## 重要差異
+![Upgrade Value Nexus settings](screenshots/upgrade-value-settings.png)
 
-- GW2 的橘色品質是 `Exotic（特異）`。
-- `Legendary（傳奇）` 是紫色，絕對不要拿去分解。本插件會顯示警告，不會建議分解傳奇物品。
-- Nexus 公開 SDK 沒有「GW2 原生物品 Tooltip hover」事件；本版在插件自己的表格與 hover tooltip 顯示價格，不使用不穩定的遊戲記憶體 Hook。
+Enter an API key, enable Traditional Chinese, choose whether to display infusions, and configure the keybind in the Nexus settings.
 
-## 安裝
+## Features
 
-1. 安裝 [Raidcore Nexus](https://raidcore.gg/gw2/nexus)。
-2. 從上方「下載」區取得 `UpgradeValue.dll`，或到 [最新 Release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest) 下載 ZIP 壓縮檔。
-3. 將 DLL 複製到 GW2 的 `addons` 根目錄，例如：
+- Scans the account bank, shared inventory slots, every character's bags, and currently equipped items.
+- Reads embedded runes and sigils from each item instance's `upgrades[]` field.
+- Traditional Chinese mode requests official API names with `lang=zh` and converts them to Traditional Chinese through Windows; English mode uses the official English names.
+- Queries the official `/v2/commerce/prices` endpoint in batches:
+  - `Instant sell`: current highest buy order.
+  - `Listing`: current lowest sell listing.
+  - `Net listing`: estimated value after the 15% Trading Post fee.
+- Provides a configurable Black Lion salvage threshold, with a default of 50 silver.
+- Clearly marks items that cannot be salvaged, upgrades without Trading Post prices, and Legendary equipment that should never be salvaged.
+- Can display infusion prices. Black Lion Salvage Kits do not recover infusions, so the addon never recommends using one for them.
+- Encrypts the API key with Windows DPAPI before saving it locally; the key is never stored in plaintext.
+- Performs all network requests in the background without blocking the game.
+- Uses the complete Chinese glyph range from Nexus `FONT_DEFAULT` to prevent Traditional Chinese text from appearing as `?`.
+
+## Important distinctions
+
+- The orange equipment rarity in Guild Wars 2 is `Exotic`.
+- `Legendary` equipment is purple and should never be salvaged. The addon displays a warning and never recommends salvaging Legendary items.
+- The public Nexus SDK does not expose native Guild Wars 2 item-tooltip hover events. This version displays prices in the addon's own table and hover tooltips without relying on unstable game-memory hooks.
+
+## Installation
+
+1. Install [Raidcore Nexus](https://raidcore.gg/gw2/nexus).
+2. Download `UpgradeValue.dll` from the Download section above, or get the ZIP archive from the [latest release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest).
+3. Copy the DLL into the Guild Wars 2 `addons` root directory. For example:
 
    ```text
    F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll
    ```
 
-   請勿放進 `addons\Nexus` 子資料夾。
+   Do not place it inside the `addons\Nexus` subdirectory.
 
-4. 啟動遊戲，在 Nexus 設定中找到 **Upgrade Value**。
-5. 建立 GW2 API Key，至少勾選：
+4. Launch the game and find **Upgrade Value** in the Nexus settings.
+5. Create a Guild Wars 2 API key with at least these permissions:
 
    - `account`
    - `inventories`
    - `characters`
 
-6. 貼上 Key，按「儲存並掃描」。
+6. Paste the key and select **Save and scan**.
 
-API Key 管理頁：<https://account.arena.net/applications>
+API key management: <https://account.arena.net/applications>
 
-## 使用方式
+## Usage
 
-1. 按 `Alt + Shift + U` 開啟或關閉主視窗。
-2. 按「重新掃描」取得目前帳號裝備及最新交易所價格。
-3. 設定「黑獅門檻（銀）」，預設為 50 銀。
-4. 選擇用「立即賣」或「扣稅掛單價」判斷。
-5. 使用搜尋欄按裝備、升級名稱或所在位置過濾結果。
+1. Press `Alt + Shift + U` to open or close the main window.
+2. Select **Refresh** to retrieve the current account equipment and latest Trading Post prices.
+3. Set the **Black Lion threshold (silver)**; the default is 50 silver.
+4. Enable **Use net listing value** to base recommendations on the net listing value; otherwise, the addon uses the instant-sell value.
+5. Use the search field to filter by equipment, upgrade name, or location.
 
-建議欄可能顯示：
+The Recommendation column may display:
 
-- `使用黑獅`：內嵌符文／印記價值達到設定門檻。
-- `一般分解`：升級價值低於門檻。
-- `不可分解`：物品帶有 `NoSalvage` 限制。
-- `無交易所價格`：升級為帳號綁定或沒有有效掛單。
-- `黑獅不取回`：灌注不會由黑獅分解工具取回。
-- `絕對不要分解`：傳奇裝備安全警告。
+- `Use Black Lion`: the embedded rune or sigil value meets the configured threshold.
+- `Normal salvage`: the upgrade value is below the threshold.
+- `Not salvageable`: the item has the `NoSalvage` restriction.
+- `No TP price`: the upgrade is account-bound or has no valid listing.
+- `BL kit won't recover`: infusions are not recovered by Black Lion Salvage Kits.
+- `Never salvage`: a safety warning for Legendary equipment.
 
-## 建置
+## Building
 
-需求：Visual Studio 2022、Desktop development with C++、Windows 10/11 SDK。
+Requirements: Visual Studio 2022, Desktop development with C++, and the Windows 10/11 SDK.
 
 ```powershell
 msbuild UpgradeValue.sln /m /p:Configuration=Release /p:Platform=x64
 ```
 
-輸出檔：`bin/Release/UpgradeValue.dll`
+Output: `bin/Release/UpgradeValue.dll`
 
-專案已附帶建置需要的 Nexus API header、Raidcore ImGui fork 與 nlohmann/json。
+The repository includes the Nexus API header, the Raidcore ImGui fork, and nlohmann/json required for building.
 
-## CI/CD 與發行
+## CI/CD and releases
 
-- [Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml) 會在推送到 `main` 或建立 Pull Request 時，自動執行 Windows x64 Release 建置並上傳 Artifact。
-- 推送符合 `v*` 的 tag（例如 `v1.0.3`）時，會自動建立 GitHub Release，並附上 DLL 與 ZIP。
-- 也可以從 **Actions → Build and release → Run workflow** 輸入版本號手動發行；版本必須與 `src/entry.cpp` 的插件版本一致。
-- GitHub Release Notes 會根據此次發行包含的 commits 自動產生。
+- [Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml) automatically runs a Windows x64 Release build and uploads artifacts when changes are pushed to `main` or a pull request is created.
+- Pushing a tag that matches `v*`, such as `v1.0.3`, automatically creates a GitHub Release with the DLL and ZIP files.
+- You can also open **Actions → Build and release → Run workflow** and enter a version to publish manually. The version must match the addon version in `src/entry.cpp`.
+- GitHub Release Notes are generated automatically from the commits included in the release.
 
-## 資料來源與安全性
+## Data sources and security
 
-- 帳號物品：`https://api.guildwars2.com/v2/account/bank`、`/account/inventory`、`/characters?ids=all`
-- 物品資料：`/v2/items?ids=...&lang=zh`
-- 價格資料：`/v2/commerce/prices?ids=...`
-- API Key 透過 `Authorization: Bearer` header 傳送，只連線到 `api.guildwars2.com`。
+- Account items: `https://api.guildwars2.com/v2/account/bank`, `/account/inventory`, and `/characters?ids=all`
+- Item data: `/v2/items?ids=...&lang=zh`
+- Price data: `/v2/commerce/prices?ids=...`
+- The API key is sent through the `Authorization: Bearer` header and only to `api.guildwars2.com`.
 
-## 已知限制
+## Known limitations
 
-- 官方 API 是帳號快照，不會在物品移動的當下主動推播；請按「重新掃描」更新。
-- 目前只讀取角色目前裝備與背包，不展開每個未啟用的裝備模板。
-- 建議僅依「內嵌升級的市價門檻」判定，沒有把裝備本體、球形靈質或一次黑獅工具的主觀機會成本納入精算。
-- 尚未提交 Raidcore 插件庫，因此需手動放入 DLL。
+- The official API provides account snapshots and does not push updates immediately when items move. Select **Refresh** to update the data.
+- The addon currently reads each character's active equipment and bags but does not expand every inactive equipment template.
+- Recommendations are based only on the embedded upgrade's market-value threshold. They do not calculate the equipment's own value, Globs of Ectoplasm, or the subjective opportunity cost of one Black Lion Salvage Kit.
+- The addon has not yet been submitted to the Raidcore addon library, so the DLL must be installed manually.
 
-## 授權
+## License
 
-Copyright © 2026 [jakeuj](https://github.com/jakeuj)。
+Copyright © 2026 [jakeuj](https://github.com/jakeuj).
 
-本專案程式碼採 MIT License。`vendor/` 內的第三方元件依各自附帶的授權條款使用。
+This project's source code is licensed under the MIT License. Third-party components under `vendor/` are used under their respective bundled licenses.
