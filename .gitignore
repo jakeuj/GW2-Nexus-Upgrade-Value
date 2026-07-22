@@ -13,6 +13,9 @@ bin/
 settings.json
 addons/
 
+# Graphify generated knowledge graph and caches.
+graphify-out/
+
 # Keep only files required to build from the vendored dependencies.
 vendor/imgui/*
 !vendor/imgui/LICENSE.txt
