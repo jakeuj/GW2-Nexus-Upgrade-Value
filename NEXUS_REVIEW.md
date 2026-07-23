@@ -4,6 +4,8 @@
 
 This document gives Raidcore Nexus reviewers a source-backed summary of Upgrade Value's behavior and review surface. It describes addon version `1.0.3.0`, built against the vendored Nexus API version `6`.
 
+**Listing status:** Upgrade Value `v1.0.3` was made public in the Nexus Addon Library after Raidcore's initial review. The public listing is [ID 128](https://raidcore.gg/gw2/addons/upgrade-value).
+
 ## Reviewer summary
 
 | Review item | Implementation |
@@ -41,7 +43,7 @@ This calculation may make an economic decision more convenient, but it is inform
 - It cannot play while the user is absent or obtain rewards by itself.
 - It does not expose combat, enemy, targeting, positioning, or encounter information.
 
-Final acceptance remains a decision for the Nexus reviewer. ArenaNet also states that it does not review, approve, or endorse individual third-party programs and retains discretion over their use.
+Raidcore published listing ID 128 after its initial review. Continued listing and any future classification remain subject to Raidcore review. ArenaNet also states that it does not review, approve, or endorse individual third-party programs and retains discretion over their use.
 
 ## AI Notice
 

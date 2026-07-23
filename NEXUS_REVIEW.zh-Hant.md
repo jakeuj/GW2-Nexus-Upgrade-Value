@@ -4,6 +4,8 @@
 
 本文件提供 Raidcore Nexus 審核人員一份可由原始碼直接驗證的 Upgrade Value 行為與審核範圍摘要。內容對應外掛版本 `1.0.3.0`，並使用專案內附的 Nexus API 版本 `6` 建置。
 
+**上架狀態：** Upgrade Value `v1.0.3` 已完成 Raidcore 初審，並公開上架 Nexus Addon Library；公開頁面為 [Listing ID 128](https://raidcore.gg/gw2/addons/upgrade-value)。
+
 ## 審核摘要
 
 | 審核項目 | 實作狀況 |
@@ -41,7 +43,7 @@
 - 無法在玩家離開時自行遊玩，也無法自行取得獎勵。
 - 不會顯示戰鬥、敵人、目標、座標或遭遇機制資訊。
 
-是否接受此外掛仍由 Nexus 審核人員最終判定。ArenaNet 亦明確表示不會審查、核准或背書個別第三方程式，並保留對其使用方式的裁量權。
+Raidcore 已在初審後公開 Listing ID 128；此外掛能否持續上架及未來分類仍由 Raidcore 審核。ArenaNet 亦明確表示不會審查、核准或背書個別第三方程式，並保留對其使用方式的裁量權。
 
 ## AI Notice
 

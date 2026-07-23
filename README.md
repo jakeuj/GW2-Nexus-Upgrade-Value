@@ -11,25 +11,27 @@ Current stable release: [**v1.0.3**](https://github.com/jakeuj/GW2-Nexus-Upgrade
 
 Project website: [gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
 
-## Nexus submission review
+## Nexus Addon Library and review
 
-For Raidcore Nexus reviewers, see the [Nexus submission review notes](NEXUS_REVIEW.md).
+Upgrade Value `v1.0.3` completed Raidcore's initial review and is now publicly listed in the Nexus Addon Library as [listing ID 128](https://raidcore.gg/gw2/addons/upgrade-value). Players can find and install it directly from the in-game library.
+
+For the source-backed review scope, see the [Nexus submission review notes](NEXUS_REVIEW.md).
 
 The short version: this project contains no reverse-engineered code, no private first-party component, no game-memory access, and no gameplay automation. Guild Wars 2 data is read only through the official v2 API, while in-game integration is limited to the public Nexus API. The review notes document the complete API, network, storage, lifecycle, and ToS-relevant surface for independent verification.
 
-Codex assisted with project documentation and development review. This assistance is disclosed for Raidcore's **AI Notice** category; the developer remains responsible for reviewing, testing, maintaining, and submitting the addon.
+Codex assisted with project documentation and development review. This assistance is disclosed for Raidcore's **AI Notice** category; the developer remains responsible for reviewing, testing, maintaining, and publishing the addon.
 
 > [!NOTE]
-> This technical summary is provided to make review easier. It does not claim ArenaNet approval or replace the final ToS assessment by Nexus reviewers.
+> Publication in the Nexus Addon Library records Raidcore's initial review. It does not claim ArenaNet approval or make this community addon an official ArenaNet or Raidcore release.
 
-## Download
+## Manual download
 
 - [Download `UpgradeValue.dll` directly](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
 - [Download `UpgradeValue-v1.0.3.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.3/UpgradeValue-v1.0.3.zip)
 - [View all releases and release notes](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
 
 > [!IMPORTANT]
-> Place `UpgradeValue.dll` in the Guild Wars 2 `addons` root directory. Do not place it inside the `addons\Nexus` subdirectory.
+> Manual installation is optional. If you download the DLL directly, place `UpgradeValue.dll` in the Guild Wars 2 `addons` root directory. Do not place it inside the `addons\Nexus` subdirectory.
 
 > [!NOTE]
 > Starting with `v1.0.3`, Nexus can check GitHub Releases for later versions and install them. Versions `v1.0.2` and earlier cannot discover this update automatically, so you must manually install `v1.0.3` once. Future automatic updates depend on the user's Nexus update settings.
@@ -79,25 +81,25 @@ Enter an API key, enable Traditional Chinese, choose whether to display infusion
 ## Installation
 
 1. Install [Raidcore Nexus](https://raidcore.gg/gw2/nexus).
-2. Download `UpgradeValue.dll` from the Download section above, or get the ZIP archive from the [latest release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest).
-3. Copy the DLL into the Guild Wars 2 `addons` root directory. For example:
-
-   ```text
-   F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll
-   ```
-
-   Do not place it inside the `addons\Nexus` subdirectory.
-
-4. Launch the game and find **Upgrade Value** in the Nexus settings.
-5. Create a Guild Wars 2 API key with at least these permissions:
+2. Launch Guild Wars 2, open the Nexus in-game Addon Library, and search for **Upgrade Value**.
+3. Install and load the addon from the library.
+4. Create a Guild Wars 2 API key with at least these permissions:
 
    - `account`
    - `inventories`
    - `characters`
 
-6. Paste the key and select **Save and scan**.
+5. Open the **Upgrade Value** settings, paste the key, and select **Save and scan**.
 
 API key management: <https://account.arena.net/applications>
+
+For a manual fallback, download `UpgradeValue.dll` from the [latest release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest) and copy it into the Guild Wars 2 `addons` root directory:
+
+```text
+F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll
+```
+
+Do not place it inside the `addons\Nexus` subdirectory.
 
 ## Usage
 
@@ -147,7 +149,6 @@ The repository includes the Nexus API header, the Raidcore ImGui fork, and nlohm
 - The official API provides account snapshots and does not push updates immediately when items move. Select **Refresh** to update the data.
 - The addon currently reads each character's active equipment and bags but does not expand every inactive equipment template.
 - Recommendations are based only on the embedded upgrade's market-value threshold. They do not calculate the equipment's own value, Globs of Ectoplasm, or the subjective opportunity cost of one Black Lion Salvage Kit.
-- The addon has not yet been submitted to the Raidcore addon library, so the DLL must be installed manually.
 
 ## License
 

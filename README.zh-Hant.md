@@ -11,25 +11,27 @@
 
 專案網站：[gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
 
-## Nexus 提交審核
+## Nexus Addon Library 與審核
 
-提供 Raidcore Nexus 官方人員審核的完整資料，請參閱 [Nexus 提交審核說明](NEXUS_REVIEW.zh-Hant.md)。
+Upgrade Value `v1.0.3` 已完成 Raidcore 初審，並以 [Listing ID 128](https://raidcore.gg/gw2/addons/upgrade-value) 公開上架 Nexus Addon Library。玩家現在可以直接從 Nexus 遊戲內插件庫搜尋並安裝。
+
+原始碼與審核範圍的完整資料，請參閱 [Nexus 提交審核說明](NEXUS_REVIEW.zh-Hant.md)。
 
 簡要說明：本專案不含逆向工程程式碼、私有的第一方元件、遊戲記憶體存取或遊戲操作自動化。Guild Wars 2 資料只透過官方 v2 API 讀取，遊戲內整合僅使用公開的 Nexus API。審核說明已列出完整的 API、網路、儲存、生命週期與 ToS 相關範圍，供審核人員直接查驗。
 
-Codex 曾協助專案文件與開發審查。此項協助會依 Raidcore 的 **AI Notice** 類別主動揭露；外掛的審查、測試、維護與提交責任仍由開發者承擔。
+Codex 曾協助專案文件與開發審查。此項協助會依 Raidcore 的 **AI Notice** 類別主動揭露；外掛的審查、測試、維護與發布責任仍由開發者承擔。
 
 > [!NOTE]
-> 此技術說明僅用於協助審核，不代表 ArenaNet 核准，也不取代 Nexus 審核人員最終的 ToS 判定。
+> 上架 Nexus Addon Library 表示已完成 Raidcore 初審，不代表 ArenaNet 核准，也不表示此外掛是由 ArenaNet 或 Raidcore 官方製作或發行。
 
-## 下載
+## 手動下載
 
 - [直接下載 `UpgradeValue.dll`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
 - [下載 `UpgradeValue-v1.0.3.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.3/UpgradeValue-v1.0.3.zip)
 - [查看所有版本與更新內容](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
 
 > [!IMPORTANT]
-> 將 `UpgradeValue.dll` 放在 Guild Wars 2 的 `addons` 根目錄；請勿放進 `addons\Nexus` 子資料夾。
+> 手動安裝是備援方式。若直接下載 DLL，請將 `UpgradeValue.dll` 放在 Guild Wars 2 的 `addons` 根目錄；請勿放進 `addons\Nexus` 子資料夾。
 
 > [!NOTE]
 > `v1.0.3` 起支援 Nexus 透過 GitHub Releases 檢查及安裝後續版本。`v1.0.2` 或更舊版本無法自行發現這項更新，必須先手動安裝 `v1.0.3` 一次；之後是否自動更新由使用者的 Nexus 更新設定決定。
@@ -79,25 +81,25 @@ Codex 曾協助專案文件與開發審查。此項協助會依 Raidcore 的 **A
 ## 安裝
 
 1. 安裝 [Raidcore Nexus](https://raidcore.gg/gw2/nexus)。
-2. 從上方「下載」區取得 `UpgradeValue.dll`，或到 [最新 Release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest) 下載 ZIP 壓縮檔。
-3. 將 DLL 複製到 GW2 的 `addons` 根目錄，例如：
-
-   ```text
-   F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll
-   ```
-
-   請勿放進 `addons\Nexus` 子資料夾。
-
-4. 啟動遊戲，在 Nexus 設定中找到 **Upgrade Value**。
-5. 建立 GW2 API Key，至少勾選：
+2. 啟動 Guild Wars 2，開啟 Nexus 遊戲內 Addon Library，搜尋 **Upgrade Value**。
+3. 從插件庫安裝並載入外掛。
+4. 建立 GW2 API Key，至少勾選：
 
    - `account`
    - `inventories`
    - `characters`
 
-6. 貼上 Key，按「儲存並掃描」。
+5. 開啟 **Upgrade Value** 設定，貼上 Key，按「儲存並掃描」。
 
 API Key 管理頁：<https://account.arena.net/applications>
+
+若需手動安裝，可從 [最新 Release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest) 下載 `UpgradeValue.dll`，再複製到 Guild Wars 2 的 `addons` 根目錄：
+
+```text
+F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll
+```
+
+請勿放進 `addons\Nexus` 子資料夾。
 
 ## 使用方式
 
@@ -147,7 +149,6 @@ msbuild UpgradeValue.sln /m /p:Configuration=Release /p:Platform=x64
 - 官方 API 是帳號快照，不會在物品移動的當下主動推播；請按「重新掃描」更新。
 - 目前只讀取角色目前裝備與背包，不展開每個未啟用的裝備模板。
 - 建議僅依「內嵌升級的市價門檻」判定，沒有把裝備本體、球形靈質或一次黑獅工具的主觀機會成本納入精算。
-- 尚未提交 Raidcore 插件庫，因此需手動放入 DLL。
 
 ## 授權
 
