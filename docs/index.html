@@ -4,95 +4,165 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Upgrade Value 是 Guild Wars 2 的 Nexus Addon，掃描橘色裝備內嵌符文與印記，顯示即時交易所價格並協助判斷是否值得使用黑獅分解工具。">
+    <meta name="author" content="jakeuj">
     <meta name="robots" content="index,follow,max-image-preview:large">
-    <meta name="theme-color" content="#11131a">
+    <meta name="theme-color" content="#090e11">
     <link rel="canonical" href="https://gw2-value.jakeuj.com/">
-    <meta name="application-name" content="GW2 Upgrade Value">
+    <link rel="icon" type="image/png" href="./assets/favicon.png">
+    <link rel="preload" as="image" href="./assets/hero-tyria-map.avif" type="image/avif" fetchpriority="high">
+    <link rel="preload" as="image" href="./assets/upgrade-value-960.avif" type="image/avif" fetchpriority="high">
+    <meta name="application-name" content="jakeuj GW2 Tools — Upgrade Value">
     <meta property="og:locale" content="zh_TW">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="GW2 Upgrade Value">
+    <meta property="og:site_name" content="jakeuj GW2 Tools">
     <meta property="og:title" content="Upgrade Value — GW2 Nexus Addon">
     <meta property="og:description" content="先看符文與印記的即時交易所價格，再決定橘色裝備該怎麼分解。">
     <meta property="og:url" content="https://gw2-value.jakeuj.com/">
-    <meta property="og:image" content="https://gw2-value.jakeuj.com/assets/upgrade-value-main.png">
-    <meta property="og:image:alt" content="Upgrade Value 插件主視窗，顯示橘色裝備內嵌升級與交易所價格">
+    <meta property="og:image" content="https://gw2-value.jakeuj.com/assets/upgrade-value-og.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Upgrade Value：先看價值，再決定怎麼拆。">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Upgrade Value — GW2 Nexus Addon">
     <meta name="twitter:description" content="掃描橘色裝備內嵌升級，顯示即時價格與黑獅分解建議。">
-    <meta name="twitter:image" content="https://gw2-value.jakeuj.com/assets/upgrade-value-main.png">
-    <title>Upgrade Value — GW2 Nexus Addon</title>
+    <meta name="twitter:image" content="https://gw2-value.jakeuj.com/assets/upgrade-value-og.jpg">
+    <title>Upgrade Value — GW2 Nexus Addon｜jakeuj GW2 Tools</title>
     <link rel="stylesheet" href="./styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "name": "Upgrade Value",
+            "applicationCategory": "GameApplication",
+            "operatingSystem": "Windows",
+            "softwareVersion": "1.0.3",
+            "description": "Guild Wars 2 Nexus Addon，掃描橘色裝備內嵌符文與印記，顯示交易所價格與分解建議。",
+            "downloadUrl": "https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll",
+            "isAccessibleForFree": true,
+            "author": {
+              "@type": "Person",
+              "name": "jakeuj",
+              "url": "https://github.com/jakeuj"
+            }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "name": "GW2 Nexus Upgrade Value",
+            "codeRepository": "https://github.com/jakeuj/GW2-Nexus-Upgrade-Value",
+            "programmingLanguage": ["C++", "HTML", "CSS", "JavaScript"],
+            "license": "https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/LICENSE",
+            "author": {
+              "@type": "Person",
+              "name": "jakeuj",
+              "url": "https://github.com/jakeuj"
+            }
+          }
+        ]
+      }
+    </script>
+    <script src="./script.js" defer></script>
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="Upgrade Value，回到頁面頂端">
-        <span class="brand-mark" aria-hidden="true">UV</span>
-        <span>Upgrade Value</span>
+    <a class="skip-link" href="#main-content">跳到主要內容</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="jakeuj GW2 Tools，回到頁面頂端">
+        <span class="brand-mark" aria-hidden="true"><i></i></span>
+        <span><strong>jakeuj</strong><small>GW2 Tools</small></span>
       </a>
-      <nav aria-label="頁面導覽">
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
+        <span class="sr-only">開啟導覽選單</span>
+        <i aria-hidden="true"></i><i aria-hidden="true"></i>
+      </button>
+      <nav id="primary-nav" aria-label="主要導覽">
         <a href="#features">功能</a>
+        <a href="#decision">判斷</a>
         <a href="#review">上架</a>
         <a href="#screenshots">畫面</a>
         <a href="#install">安裝</a>
-        <a href="#download">下載</a>
+        <a href="#tools">GW2 工具箱</a>
       </nav>
     </header>
 
-    <main id="top">
-      <section class="hero" aria-labelledby="page-title">
-        <div class="hero-copy">
-          <p class="eyebrow">Guild Wars 2 · Nexus Addon</p>
-          <div class="status-pill"><span aria-hidden="true"></span>穩定版 v1.0.3</div>
-          <h1 id="page-title">先看價值，<br><em>再決定怎麼拆。</em></h1>
-          <p class="lead">
-            掃描帳號中的橘色裝備，找出內嵌符文與印記，並比較即時交易所價格。高價升級值得留給黑獅分解工具，低價升級就不必浪費次數。
-          </p>
-          <div class="actions" aria-label="主要操作">
-            <a class="button primary" href="https://raidcore.gg/gw2/addons/upgrade-value">查看 Raidcore 上架頁 <span aria-hidden="true">↗</span></a>
-            <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll">下載 DLL <span aria-hidden="true">↓</span></a>
-            <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value">查看 GitHub</a>
+    <main id="main-content">
+      <section id="top" class="hero" aria-labelledby="page-title">
+        <div class="hero-art" aria-hidden="true"></div>
+        <div class="hero-grid shell">
+          <div class="hero-copy reveal">
+            <p class="eyebrow">Guild Wars 2 · Nexus Addon</p>
+            <div class="hero-meta">
+              <span class="status-pill"><i aria-hidden="true"></i><span>穩定版 v1.0.3</span><b>Addon Library 已上架</b></span>
+              <a class="maker-link" href="https://github.com/jakeuj">Built &amp; maintained by <strong>jakeuj</strong></a>
+            </div>
+            <h1 id="page-title">先看價值，<br><em>再決定怎麼拆。</em></h1>
+            <p class="lead">
+              掃描帳號中的橘色裝備，找出內嵌符文與印記，並比較即時交易所價格。高價升級值得留給黑獅分解工具，低價升級就不必浪費次數。
+            </p>
+            <div class="actions" aria-label="主要操作">
+              <a class="button primary" href="https://raidcore.gg/gw2/addons/upgrade-value">從 Addon Library 安裝 <span aria-hidden="true">↗</span></a>
+              <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll">下載 DLL <span aria-hidden="true">↓</span></a>
+              <a class="button ghost" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value">GitHub 原始碼 <span aria-hidden="true">↗</span></a>
+            </div>
+            <p class="download-note">Windows x64 · 社群插件 · 免費開源 · 不自動操作遊戲</p>
+            <ul class="quick-stats" aria-label="插件重點">
+              <li><strong><span data-count="50" data-suffix="s">50s</span></strong><small>預設黑獅門檻</small></li>
+              <li><strong><span data-count="15" data-suffix="%">15%</span></strong><small>交易所費用換算</small></li>
+              <li><strong><span data-count="3" data-suffix=" 項">3 項</span></strong><small>必要 API 權限</small></li>
+            </ul>
           </div>
-          <p class="download-note">已上架 Nexus Addon Library · Windows x64 · 社群插件 · 免費開源</p>
-          <dl class="quick-stats" aria-label="插件重點">
-            <div><dt>即時</dt><dd>Trading Post 價格</dd></div>
-            <div><dt>50s</dt><dd>預設黑獅門檻</dd></div>
-            <div><dt>DPAPI</dt><dd>本機加密金鑰</dd></div>
-          </dl>
-        </div>
 
-        <figure class="hero-shot">
-          <div class="shot-bar">
-            <span><i aria-hidden="true"></i>Upgrade Value</span>
-            <span>Exotic Upgrade Scanner</span>
+          <div class="hero-stage reveal" data-reveal-delay="120">
+            <div class="value-orbit" aria-hidden="true">
+              <span class="orbit-ring ring-one"></span>
+              <span class="orbit-ring ring-two"></span>
+              <span class="orbit-node node-price">TP</span>
+              <span class="orbit-node node-safe">✓</span>
+            </div>
+            <figure class="product-shot tilt-card" data-tilt>
+              <div class="shot-bar">
+                <span><i aria-hidden="true"></i>Upgrade Value</span>
+                <span>Exotic Upgrade Scanner</span>
+              </div>
+              <picture>
+                <source type="image/avif" srcset="./assets/upgrade-value-640.avif 640w, ./assets/upgrade-value-960.avif 960w" sizes="(max-width: 1120px) 92vw, 610px">
+                <source type="image/webp" srcset="./assets/upgrade-value-640.webp 640w, ./assets/upgrade-value-960.webp 960w" sizes="(max-width: 1120px) 92vw, 610px">
+                <img src="./assets/upgrade-value-main.png" alt="Upgrade Value 主視窗，列出符文、裝備位置、立即賣、掛單與扣稅掛單價格" width="983" height="578" fetchpriority="high" decoding="async">
+              </picture>
+              <figcaption><span>實際遊戲畫面</span><strong>繁體中文介面</strong></figcaption>
+            </figure>
+            <div class="signal-note price-note" aria-hidden="true"><i></i><span><strong>LIVE TP</strong>即時價格</span></div>
+            <div class="signal-note privacy-note" aria-hidden="true"><i></i><span><strong>LOCAL</strong>DPAPI 保護</span></div>
           </div>
-          <img src="./assets/upgrade-value-main.png" alt="Upgrade Value 主視窗，列出符文、裝備位置、立即賣、掛單與扣稅掛單價格" width="1017" height="575">
-          <figcaption>實際遊戲畫面 · 繁體中文介面</figcaption>
-        </figure>
+        </div>
+        <a class="scroll-cue" href="#features"><span>SCROLL</span><i aria-hidden="true"></i></a>
       </section>
 
-      <section id="features" class="section" aria-labelledby="features-title">
-        <div class="section-heading">
-          <p class="eyebrow">掃描、估價、判斷</p>
-          <h2 id="features-title">把分解前最麻煩的查價，集中在一個視窗</h2>
+      <section id="features" class="section shell" aria-labelledby="features-title">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Scan · Value · Decide</p>
+          <h2 id="features-title">把分解前最麻煩的查價，<br><em>集中在一個視窗。</em></h2>
           <p>官方 API 負責帳號物品與交易所價格，插件只做必要的整理與判斷，不讀取不穩定的遊戲記憶體。</p>
         </div>
         <div class="feature-grid">
-          <article>
+          <article class="feature-card spotlight reveal">
             <span class="card-number">01</span>
             <h3>掃描整個帳號</h3>
             <p>涵蓋帳號銀行、共享物品欄、所有角色背包與目前裝備，找出物品實例中的內嵌升級。</p>
           </article>
-          <article>
+          <article class="feature-card spotlight reveal" data-reveal-delay="80">
             <span class="card-number">02</span>
             <h3>三種價格並列</h3>
             <p>同時顯示立即賣、最低掛單，以及扣除 15% 交易所費用後的實際掛單價值。</p>
           </article>
-          <article>
+          <article class="feature-card spotlight reveal" data-reveal-delay="160">
             <span class="card-number">03</span>
             <h3>避免拆錯裝備</h3>
             <p>標示不可分解、無交易所價格與灌注，傳奇裝備則顯示「絕對不要分解」安全警告。</p>
           </article>
-          <article>
+          <article class="feature-card spotlight reveal" data-reveal-delay="240">
             <span class="card-number">04</span>
             <h3>金鑰留在本機</h3>
             <p>API Key 以 Windows DPAPI 加密保存，請求只傳送到 ArenaNet 官方 API。</p>
@@ -100,137 +170,193 @@
         </div>
       </section>
 
-      <section class="decision-section" aria-labelledby="decision-title">
-        <div>
-          <p class="eyebrow">判斷邏輯</p>
-          <h2 id="decision-title">價值達門檻，才建議使用黑獅</h2>
+      <section id="decision" class="section decision-section shell" aria-labelledby="decision-title">
+        <div class="decision-copy reveal">
+          <p class="eyebrow">Decision Pipeline</p>
+          <h2 id="decision-title">價值達門檻，<br><em>才建議使用黑獅。</em></h2>
           <p>你可以自行設定門檻，並選擇以立即賣或扣稅掛單價判斷。插件提供資訊與建議，最後仍由你決定如何處理裝備。</p>
         </div>
-        <div class="decision-flow" aria-label="分解建議流程">
-          <div><span>1</span><strong>找到內嵌升級</strong><small>符文或印記</small></div>
+        <div class="decision-flow reveal" data-flow data-reveal-delay="100" aria-label="分解建議流程">
+          <div class="flow-card"><span>1</span><strong>找到內嵌升級</strong><small>符文或印記</small></div>
           <i aria-hidden="true">→</i>
-          <div><span>2</span><strong>取得 TP 價格</strong><small>立即賣／扣稅掛單</small></div>
+          <div class="flow-card"><span>2</span><strong>取得 TP 價格</strong><small>立即賣／扣稅掛單</small></div>
           <i aria-hidden="true">→</i>
-          <div class="highlight"><span>3</span><strong>比較自訂門檻</strong><small>使用黑獅或一般分解</small></div>
+          <div class="flow-card highlight"><span>3</span><strong>比較自訂門檻</strong><small>使用黑獅或一般分解</small></div>
         </div>
       </section>
 
-      <section id="review" class="review-section" aria-labelledby="review-title">
-        <div class="review-heading">
-          <p class="eyebrow">Nexus Addon Library</p>
-          <h2 id="review-title">完成 Raidcore 初審，<br>現已公開上架</h2>
-          <p>
-            Upgrade Value v1.0.3 已完成 Raidcore 初審，並以 Listing ID 128 公開上架 Nexus Addon Library。玩家可直接從 Nexus 遊戲內插件庫搜尋並安裝；公開上架不代表 ArenaNet 核准，也不表示本插件由 Raidcore 官方製作或發行。
+      <section id="review" class="section review-section" aria-labelledby="review-title">
+        <div class="shell">
+          <div class="review-heading reveal">
+            <p class="eyebrow">Nexus Addon Library</p>
+            <h2 id="review-title">完成 Raidcore 初審，<br><em>現已公開上架。</em></h2>
+            <p>
+              Upgrade Value v1.0.3 已完成 Raidcore 初審，並以 Listing ID 128 公開上架 Nexus Addon Library。玩家可直接從 Nexus 遊戲內插件庫搜尋並安裝；公開上架不代表 ArenaNet 核准，也不表示本插件由 Raidcore 官方製作或發行。
+            </p>
+          </div>
+
+          <div class="review-status reveal" role="note" aria-label="目前 Nexus 上架狀態">
+            <span class="review-status-dot" aria-hidden="true"></span>
+            <div>
+              <strong>目前狀態：已公開上架 Nexus Addon Library</strong>
+              <p>穩定版 v1.0.3 可手動安裝；新安裝建議直接從遊戲內插件庫取得 · Listing ID 128。</p>
+            </div>
+          </div>
+
+          <div class="review-grid">
+            <article class="spotlight reveal">
+              <span class="card-number">01</span>
+              <h3>只用公開 API</h3>
+              <p>遊戲內整合使用公開 Nexus API；帳號與價格資料只從 Guild Wars 2 官方 v2 API 讀取。</p>
+            </article>
+            <article class="spotlight reveal" data-reveal-delay="80">
+              <span class="card-number">02</span>
+              <h3>沒有逆向工程</h3>
+              <p>不讀寫遊戲記憶體，不含 Hook、特徵碼掃描、封包攔截、輸入模擬或遊戲操作自動化。</p>
+            </article>
+            <article class="spotlight reveal" data-reveal-delay="160">
+              <span class="card-number">03</span>
+              <h3>隱私與安全</h3>
+              <p>沒有遙測或開發者後端；API Key 以 Windows DPAPI 加密，連線目的地與儲存行為皆已公開。</p>
+            </article>
+            <article class="spotlight reveal" data-reveal-delay="240">
+              <span class="card-number">04</span>
+              <h3>AI Notice</h3>
+              <p>Codex 曾協助專案文件與開發審查；所有輸出均由開發者檢查，並由開發者負責測試、維護與合規。</p>
+            </article>
+          </div>
+
+          <div class="review-actions reveal" aria-label="Nexus 上架與審核資料">
+            <a class="button primary" href="https://raidcore.gg/gw2/addons/upgrade-value">Raidcore 上架頁</a>
+            <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.md">Review notes (English)</a>
+            <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.zh-Hant.md">繁中審核說明</a>
+            <a class="button ghost" href="https://raidcore.gg/gw2/addon-policy">Addon Policy</a>
+          </div>
+
+          <p class="policy-note reveal">
+            公開上架表示 Raidcore 已完成初審，不代表 ArenaNet 核准，也不表示本插件由 Raidcore 官方製作或發行。ArenaNet 表示不會審查、核准或背書個別第三方程式，使用風險由玩家自行承擔。<a href="https://help.guildwars2.com/hc/en-us/articles/360013625034-Policy-Third-Party-Programs">查看 ArenaNet 第三方程式政策</a>
           </p>
         </div>
-
-        <div class="review-status" role="note" aria-label="目前 Nexus 上架狀態">
-          <span class="review-status-dot" aria-hidden="true"></span>
-          <div>
-            <strong>目前狀態：已公開上架 Nexus Addon Library</strong>
-            <p>穩定版 v1.0.3 可手動安裝；新安裝建議直接從遊戲內插件庫取得 · Listing ID 128。</p>
-          </div>
-        </div>
-
-        <div class="review-grid">
-          <article>
-            <span class="card-number">01</span>
-            <h3>只用公開 API</h3>
-            <p>遊戲內整合使用公開 Nexus API；帳號與價格資料只從 Guild Wars 2 官方 v2 API 讀取。</p>
-          </article>
-          <article>
-            <span class="card-number">02</span>
-            <h3>沒有逆向工程</h3>
-            <p>不讀寫遊戲記憶體，不含 Hook、特徵碼掃描、封包攔截、輸入模擬或遊戲操作自動化。</p>
-          </article>
-          <article>
-            <span class="card-number">03</span>
-            <h3>隱私與安全</h3>
-            <p>沒有遙測或開發者後端；API Key 以 Windows DPAPI 加密，連線目的地與儲存行為皆已公開。</p>
-          </article>
-          <article>
-            <span class="card-number">04</span>
-            <h3>AI Notice</h3>
-            <p>Codex 曾協助專案文件與開發審查；所有輸出均由開發者檢查，並由開發者負責測試、維護與合規。</p>
-          </article>
-        </div>
-
-        <div class="review-actions" aria-label="Nexus 上架與審核資料">
-          <a class="button primary" href="https://raidcore.gg/gw2/addons/upgrade-value">Raidcore 上架頁</a>
-          <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.md">Review notes (English)</a>
-          <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.zh-Hant.md">繁中審核說明</a>
-          <a class="button secondary" href="https://raidcore.gg/gw2/addon-policy">Raidcore Addon Policy</a>
-        </div>
-
-        <p class="policy-note">
-          公開上架表示 Raidcore 已完成初審，不代表 ArenaNet 核准，也不表示本插件由 Raidcore 官方製作或發行。ArenaNet 表示不會審查、核准或背書個別第三方程式，使用風險由玩家自行承擔。<a href="https://help.guildwars2.com/hc/en-us/articles/360013625034-Policy-Third-Party-Programs">查看 ArenaNet 第三方程式政策</a>
-        </p>
       </section>
 
-      <section id="screenshots" class="section screenshots" aria-labelledby="screenshots-title">
-        <div class="section-heading compact">
-          <p class="eyebrow">實際畫面</p>
-          <h2 id="screenshots-title">資訊清楚，設定也保持簡單</h2>
+      <section id="screenshots" class="section screenshots shell" aria-labelledby="screenshots-title">
+        <div class="section-heading compact reveal">
+          <p class="eyebrow">In-game Interface</p>
+          <h2 id="screenshots-title">資訊清楚，<br><em>設定也保持簡單。</em></h2>
         </div>
         <div class="gallery">
-          <figure class="gallery-main">
-            <img src="./assets/upgrade-value-main.png" alt="Upgrade Value 主視窗的橘色裝備與升級價格清單" width="1017" height="575" loading="lazy">
+          <figure class="gallery-main tilt-card reveal" data-tilt>
+            <picture>
+              <source type="image/avif" srcset="./assets/upgrade-value-640.avif 640w, ./assets/upgrade-value-960.avif 960w" sizes="(max-width: 920px) 92vw, 760px">
+              <source type="image/webp" srcset="./assets/upgrade-value-640.webp 640w, ./assets/upgrade-value-960.webp 960w" sizes="(max-width: 920px) 92vw, 760px">
+              <img src="./assets/upgrade-value-main.png" alt="Upgrade Value 主視窗的橘色裝備與升級價格清單" width="983" height="578" loading="lazy" decoding="async">
+            </picture>
             <figcaption><strong>升級價格清單</strong><span>依價格、裝備與位置快速判斷</span></figcaption>
           </figure>
-          <figure>
-            <img src="./assets/upgrade-value-settings.png" alt="Nexus 中的 Upgrade Value 設定畫面" width="1000" height="642" loading="lazy">
+          <figure class="reveal" data-reveal-delay="120">
+            <picture>
+              <source type="image/avif" srcset="./assets/upgrade-value-settings-640.avif 640w, ./assets/upgrade-value-settings-960.avif 960w" sizes="(max-width: 920px) 92vw, 430px">
+              <source type="image/webp" srcset="./assets/upgrade-value-settings-640.webp 640w, ./assets/upgrade-value-settings-960.webp 960w" sizes="(max-width: 920px) 92vw, 430px">
+              <img src="./assets/upgrade-value-settings.png" alt="Nexus 中的 Upgrade Value 設定畫面" width="1000" height="641" loading="lazy" decoding="async">
+            </picture>
             <figcaption><strong>Nexus 設定</strong><span>API Key、繁中介面與顯示選項</span></figcaption>
           </figure>
         </div>
       </section>
 
-      <section id="install" class="install-section" aria-labelledby="install-title">
-        <div class="section-heading compact">
-          <p class="eyebrow">四步完成</p>
-          <h2 id="install-title">安裝與開始掃描</h2>
-        </div>
-        <ol class="steps">
-          <li><span>1</span><div><strong>安裝 Nexus</strong><p>先安裝 Raidcore Nexus，並確認能在遊戲中開啟 Nexus 設定。</p></div></li>
-          <li><span>2</span><div><strong>開啟插件庫</strong><p>啟動 Guild Wars 2，在 Nexus 內開啟 Addon Library。</p></div></li>
-          <li><span>3</span><div><strong>搜尋並安裝</strong><p>找到 <code>Upgrade Value</code>，直接從遊戲內插件庫安裝並載入。</p></div></li>
-          <li><span>4</span><div><strong>輸入 API Key</strong><p>在插件設定貼上 Key，按「儲存並掃描」即可取得最新價格。</p></div></li>
-        </ol>
-        <div class="permission-box">
-          <div>
-            <strong>API Key 必要權限</strong>
-            <p>在 ArenaNet API Key 管理頁建立金鑰，至少勾選以下三項。</p>
+      <section id="install" class="section install-section" aria-labelledby="install-title">
+        <div class="shell">
+          <div class="section-heading compact reveal">
+            <p class="eyebrow">First Install · Four Steps</p>
+            <h2 id="install-title">安裝與開始掃描</h2>
           </div>
-          <ul aria-label="必要 API Key 權限">
-            <li>account</li>
-            <li>inventories</li>
-            <li>characters</li>
-          </ul>
-          <a href="https://account.arena.net/applications">開啟 API Key 管理頁 <span aria-hidden="true">↗</span></a>
+          <ol class="steps">
+            <li class="reveal"><span>1</span><div><strong>安裝 Nexus</strong><p>先安裝 Raidcore Nexus，並確認能在遊戲中開啟 Nexus 設定。</p></div></li>
+            <li class="reveal" data-reveal-delay="70"><span>2</span><div><strong>開啟插件庫</strong><p>啟動 Guild Wars 2，在 Nexus 內開啟 Addon Library。</p></div></li>
+            <li class="reveal" data-reveal-delay="140"><span>3</span><div><strong>搜尋並安裝</strong><p>找到 <code>Upgrade Value</code>，直接從遊戲內插件庫安裝並載入。</p></div></li>
+            <li class="reveal" data-reveal-delay="210"><span>4</span><div><strong>輸入 API Key</strong><p>在插件設定貼上 Key，按「儲存並掃描」即可取得最新價格。</p></div></li>
+          </ol>
+          <div class="permission-box reveal">
+            <div>
+              <strong>API Key 必要權限</strong>
+              <p>在 ArenaNet API Key 管理頁建立金鑰，至少勾選以下三項。</p>
+            </div>
+            <ul aria-label="必要 API Key 權限">
+              <li>account</li>
+              <li>inventories</li>
+              <li>characters</li>
+            </ul>
+            <a href="https://account.arena.net/applications">開啟 API Key 管理頁 <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="path-note reveal"><strong>手動安裝備援：</strong>也可從 <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest">最新 Release</a> 下載 DLL，放到 Guild Wars 2 的 <code>addons</code> 根目錄（不是 <code>addons\Nexus</code>），例如 <code>F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll</code>。</p>
         </div>
-        <p class="path-note"><strong>手動安裝備援：</strong>也可從 <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest">最新 Release</a> 下載 DLL，放到 Guild Wars 2 的 <code>addons</code> 根目錄（不是 <code>addons\Nexus</code>），例如 <code>F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll</code>。</p>
       </section>
 
-      <section id="download" class="release-strip" aria-labelledby="download-title">
+      <section id="tools" class="section tools-section shell" aria-labelledby="tools-title">
+        <div class="section-heading reveal">
+          <p class="eyebrow">jakeuj · GW2 Tool Suite</p>
+          <h2 id="tools-title">從裝備價值到活動情報，<br><em>橫跨三種 GW2 擴充生態。</em></h2>
+          <p>Blish HUD、Nexus 與 ArcDPS 各自處理不同問題，但都以繁中玩家看得懂、能驗證、可安全更新為目標。</p>
+        </div>
+        <div class="tools-grid">
+          <article class="tool-card value-tool current spotlight reveal">
+            <div class="tool-visual">
+              <picture>
+                <source type="image/avif" srcset="./assets/upgrade-value-640.avif 640w, ./assets/upgrade-value-960.avif 960w" sizes="(max-width: 760px) 92vw, 390px">
+                <source type="image/webp" srcset="./assets/upgrade-value-640.webp 640w, ./assets/upgrade-value-960.webp 960w" sizes="(max-width: 760px) 92vw, 390px">
+                <img src="./assets/upgrade-value-main.png" width="983" height="578" alt="Upgrade Value Nexus 插件畫面，列出裝備內嵌升級與交易所價格" loading="lazy" decoding="async">
+              </picture>
+              <span class="tool-type">Nexus Addon</span>
+            </div>
+            <div class="tool-body"><p class="tool-index">01 · CURRENT</p><h3>Upgrade Value</h3><p>掃描橘色裝備內嵌符文與印記，取得即時交易所價格，協助判斷是否值得使用黑獅分解工具。</p><a href="#top">回到本頁介紹 <span aria-hidden="true">↑</span></a></div>
+          </article>
+
+          <article class="tool-card events-tool spotlight reveal" data-reveal-delay="90">
+            <div class="tool-visual">
+              <picture>
+                <source type="image/avif" srcset="./assets/events-rewards-900.avif">
+                <source type="image/webp" srcset="./assets/events-rewards-900.webp">
+                <img src="./assets/events-rewards-900.webp" width="900" height="645" alt="Events and Metas Observer 繁中版畫面" loading="lazy" decoding="async">
+              </picture>
+              <span class="tool-type">Blish HUD Module</span>
+            </div>
+            <div class="tool-body"><p class="tool-index">02 · EVENTS</p><h3>Events and Metas Observer</h3><p>官方活動時程、雙語名稱、世界王獎勵、通知與安全更新。</p><a href="https://gw.jakeuj.com/">前往 Events 繁中版 <span aria-hidden="true">↗</span></a></div>
+          </article>
+
+          <article class="tool-card arcdps-tool spotlight reveal" data-reveal-delay="180">
+            <div class="tool-visual tool-glyph" aria-hidden="true"><span>繁</span><i></i><b>Traditional Chinese UI</b></div>
+            <span class="tool-type">ArcDPS Plugin</span>
+            <div class="tool-body"><p class="tool-index">03 · TAIWAN ZH</p><h3>GW2 ArcDPS 繁體中文 UI</h3><p>讓遊戲介面也能使用台灣繁體中文，搭配設定保存與自動化 Release。</p><a href="https://gw2.jakeuj.com/">前往繁中 UI 網站 <span aria-hidden="true">↗</span></a></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="download" class="release-cta shell reveal" aria-labelledby="download-title">
+        <div class="release-sigil" aria-hidden="true"><span></span></div>
         <div>
-          <span class="release-dot" aria-hidden="true"></span>
-          <p><strong id="download-title">Upgrade Value v1.0.3</strong><br>新安裝建議從 Nexus 遊戲內插件庫取得；若仍使用 v1.0.2 或更舊版本，需先手動安裝本版一次，之後可由 Nexus 檢查更新。</p>
+          <p class="eyebrow">Stable Release</p>
+          <h2 id="download-title">Upgrade Value v1.0.3</h2>
+          <p>新安裝建議從 Nexus 遊戲內插件庫取得；若仍使用 v1.0.2 或更舊版本，需先手動安裝本版一次，之後可由 Nexus 檢查更新。</p>
         </div>
         <div class="release-actions">
           <a class="button primary" href="https://raidcore.gg/gw2/addons/upgrade-value">查看 Addon Library</a>
           <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll">下載 DLL</a>
-          <a class="button secondary" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest">查看 Release</a>
+          <a class="button ghost" href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest">Release</a>
         </div>
       </section>
     </main>
 
-    <footer>
-      <p>由 <a href="https://github.com/jakeuj">jakeuj</a> 製作 · GW2 ID：jakeuj.5260<br><span>社群插件，非 ArenaNet 或 Raidcore 官方發行。</span></p>
+    <footer class="site-footer shell">
       <div>
+        <a class="footer-brand" href="https://github.com/jakeuj">jakeuj · GW2 Tools</a>
+        <p>由玩家為繁中社群製作 · GW2 ID：jakeuj.5260<br>社群插件，非 ArenaNet 或 Raidcore 官方發行。</p>
+      </div>
+      <nav aria-label="頁尾連結">
         <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value">GitHub</a>
         <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases">Releases</a>
         <a href="https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/blob/main/NEXUS_REVIEW.md">Review notes</a>
-        <a href="https://raidcore.gg/gw2/addons/upgrade-value">Raidcore 上架頁</a>
-      </div>
+        <a href="https://raidcore.gg/gw2/addons/upgrade-value">Raidcore</a>
+      </nav>
     </footer>
   </body>
 </html>
