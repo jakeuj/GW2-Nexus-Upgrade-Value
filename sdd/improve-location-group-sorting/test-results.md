@@ -15,14 +15,15 @@
 
 - Pull request：[PR #11](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/pull/11)
 - Follow-up issue：[Issue #10](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/issues/10)
-- GitHub Actions：Pending
+- GitHub Actions：[run 29991515059](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/runs/29991515059)
 - Workflow：`Build and release`
-- 結果：Pending
-- Artifact：Pending
-- DLL 大小：Pending
-- DLL 格式：Pending
-- 匯出：Pending
-- SHA-256：Pending
+- 結果：`Release|x64` 成功
+- Artifact：`UpgradeValue-ci-27-92290bb`
+- DLL 大小：731,648 bytes
+- DLL 格式：PE32+ x86-64 Windows DLL（COFF x86-64）
+- 匯出：`GetAddonDef`
+- SHA-256：`4ff939100a32b7eb860b845528ad83e8acc9b993993e517fcc6c05d87c0766ca`
+- Artifact ZIP 只包含一份 `UpgradeValue.dll`，其 SHA-256 與獨立 DLL 相同。
 
 ## CrossOver 執行期驗收
 
