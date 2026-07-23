@@ -2,6 +2,17 @@
 
 Read the relevant sections before changing a covered surface. Derive current values from source; examples here describe the contract, not a substitute for inspection.
 
+## Contents
+
+- [Source map](#source-map)
+- [Metadata and Raidcore submission](#metadata-and-raidcore-submission)
+- [Security and policy boundary](#security-and-policy-boundary)
+- [Localization contract](#localization-contract)
+- [Results-table contract](#results-table-contract)
+- [Version and release checklist](#version-and-release-checklist)
+- [In-game smoke test](#in-game-smoke-test)
+- [Documentation update triggers](#documentation-update-triggers)
+
 ## Source map
 
 | Surface | Authoritative files |
@@ -54,7 +65,16 @@ Any new network destination, permission, persisted account data, updater, hook, 
 - Use the existing `T(zh, en)` selection pattern.
 - Request official Chinese names with `lang=zh`, then retain the Windows conversion to Traditional Chinese.
 - Acquire and release Nexus `FONT_DEFAULT`; before enabling Traditional Chinese, verify that the selected font actually contains representative CJK glyphs instead of assuming the requested atlas range guarantees coverage.
+- Keep the language selector and missing-glyph warning readable without CJK. When a selected or persisted Chinese mode loses glyph support, persist the English fallback, invalidate the in-flight Chinese scan, clear stale rows, and schedule one English scan so cancelled results cannot overwrite the fallback.
 - Keep `README.md` and `README.zh-Hant.md` structurally aligned; do the same for both `NEXUS_REVIEW` files.
+
+## Results-table contract
+
+- Preserve value-first ordering as the unsorted state.
+- Limit user sorting to the Location column unless a requested change explicitly expands the table contract.
+- Keep Location sorting tri-state: ascending, descending, then unsorted.
+- Compare the full location string and use stable sorting so equal locations retain their existing value order.
+- Apply the selected sort after search filtering without resetting the sort direction.
 
 ## Version and release checklist
 
@@ -63,10 +83,11 @@ Any new network destination, permission, persisted account data, updater, hook, 
 3. Update the reviewed addon version in both Nexus review documents.
 4. Update every current-version label in `docs/index.html`; do not alter unrelated historical version text.
 5. Run the invariant checker and `git diff --check`.
-6. Build `Release|x64` on Windows and verify `bin/Release/UpgradeValue.dll` is non-empty.
-7. Tag `vX.Y.Z`, or dispatch the release workflow with that version. The workflow rejects a tag that differs from `Definition.Version`.
-8. Confirm the GitHub Release contains exactly the stable `UpgradeValue.dll` asset plus `UpgradeValue-vX.Y.Z.zip`.
-9. Confirm the stable latest-download URL resolves to the new DLL.
+6. Build `Release|x64` on Windows and verify `bin/Release/UpgradeValue.dll` is non-empty. On macOS, use a pull request to trigger the Windows workflow and test its artifact in CrossOver.
+7. Use `workflow_dispatch` only when explicitly intending to create an official tag and Release; never use it as a test build. Prefer an annotated `vX.Y.Z` tag after the pull request and runtime tests pass.
+8. Wait for the tag workflow and confirm the GitHub Release contains exactly the stable `UpgradeValue.dll` asset plus `UpgradeValue-vX.Y.Z.zip`.
+9. Confirm the standalone DLL and the DLL inside the ZIP are identical, and confirm the stable latest-download URL resolves to the same SHA-256.
+10. Publish or close the related issue only after the release and latest-download checks pass.
 
 Do not commit DLL, executable, object, static-library, or ZIP build output.
 
@@ -74,13 +95,16 @@ Do not commit DLL, executable, object, static-library, or ZIP build output.
 
 After a build-affecting change or before release, verify on Windows with Guild Wars 2 and Nexus:
 
-1. Load the addon and confirm no Nexus error is reported.
-2. Open and close the main window with `Alt + Shift + U` and Escape.
+1. Press the Nexus Addon Library `Load` action when needed, then confirm the expected addon version and a successful load entry in `addons/Nexus/Nexus.log`. Selecting the addon row is not evidence of loading.
+2. Open and close the main window with Escape and the currently configured keybind; do not assume the documented default is unchanged in the test environment.
 3. Save settings, restart or reload, and confirm persistence without exposing the API key.
 4. Test a missing permission or invalid key and confirm a useful, non-secret error.
-5. Switch between English and Traditional Chinese and inspect glyph rendering.
-6. Refresh data and verify bank, shared inventory, character inventory/equipment, price columns, and recommendations.
-7. Unload or reload the addon and confirm the worker exits and registrations/fonts are released cleanly.
+5. With the stock Inter font, verify English default, disabled Traditional Chinese, readable CJK guidance, and migration from a persisted `chineseUi: true`.
+6. With a locally supplied CJK-capable Nexus font, switch between English and Traditional Chinese, restart, and inspect glyph rendering. Do not commit or distribute the font.
+7. Start a Chinese refresh and switch back to a non-CJK font; confirm cancellation, immediate English fallback, cleared stale rows, and one final English result set.
+8. Verify Location ascending, descending, unsorted restoration, equal-location stability, and search-filter persistence.
+9. Refresh data and verify bank, shared inventory, character inventory/equipment, price columns, and recommendations.
+10. Unload or reload during a scan and confirm the worker exits and registrations/fonts are released cleanly.
 
 ## Documentation update triggers
 
@@ -93,3 +117,5 @@ After a build-affecting change or before release, verify on Windows with Guild W
 | Version or release asset | `entry.cpp`, both READMEs, both review documents, `docs/index.html`, release workflow assumptions |
 | Hook, automation, memory/process access | Full ToS review and both Nexus review documents |
 | AI-assisted public content | Preserve or update the AI Notice disclosure |
+
+Use only real Nexus/Guild Wars 2 screenshots for user-facing addon UI. Mask secrets, exclude settings and logs from public evidence, update `screenshots/` fallbacks and every website AVIF/WebP derivative, and verify image dimensions and alt text.

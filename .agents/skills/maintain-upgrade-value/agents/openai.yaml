@@ -1,4 +1,4 @@
 interface:
   display_name: "Maintain Upgrade Value"
-  short_description: "Maintain the Upgrade Value Nexus addon"
-  default_prompt: "Use $maintain-upgrade-value to inspect and safely update this GW2 Nexus addon."
+  short_description: "Maintain, test, and release the Upgrade Value addon"
+  default_prompt: "Use $maintain-upgrade-value to safely change, test, and release this GW2 Nexus addon."
