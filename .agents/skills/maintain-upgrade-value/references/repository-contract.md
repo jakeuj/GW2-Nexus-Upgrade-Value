@@ -53,7 +53,7 @@ Any new network destination, permission, persisted account data, updater, hook, 
 - Supply Traditional Chinese and English for every visible label, status, error, tooltip, and settings explanation.
 - Use the existing `T(zh, en)` selection pattern.
 - Request official Chinese names with `lang=zh`, then retain the Windows conversion to Traditional Chinese.
-- Acquire the complete Nexus `FONT_DEFAULT` glyph range and release the font on shutdown.
+- Acquire and release Nexus `FONT_DEFAULT`; before enabling Traditional Chinese, verify that the selected font actually contains representative CJK glyphs instead of assuming the requested atlas range guarantees coverage.
 - Keep `README.md` and `README.zh-Hant.md` structurally aligned; do the same for both `NEXUS_REVIEW` files.
 
 ## Version and release checklist

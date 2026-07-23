@@ -7,6 +7,7 @@
 #include <cctype>
 #include <cstring>
 #include <filesystem>
+#include <iterator>
 #include <sstream>
 
 #include "Gw2Api.h"
@@ -19,10 +20,11 @@ namespace UpgradeValue
     namespace
     {
         constexpr const char* WindowName = "Upgrade Value##NexusUpgradeValue";
-        // Nexus builds FONT_DEFAULT with its extended glyph ranges, including
-        // the full Chinese range. Custom font identifiers only receive the
-        // basic/Latin ranges plus Nexus-owned localization strings.
+        // Nexus requests the full Chinese range for FONT_DEFAULT, but the
+        // selected font file may not provide those glyphs. Verify coverage
+        // before enabling the Traditional Chinese UI.
         constexpr const char* CjkFontId = "FONT_DEFAULT";
+        constexpr ImGuiID LocationColumnId = 0x4C4F4341; // "LOCA"
 
         struct FontScope
         {
@@ -70,18 +72,32 @@ namespace UpgradeValue
         store_ = std::make_unique<SettingsStore>(directory);
         settings_ = store_->Load();
         strncpy_s(apiKeyBuffer_.data(), apiKeyBuffer_.size(), settings_.apiKey.c_str(), _TRUNCATE);
-        status_ = T("尚未掃描。", "Not scanned yet.");
 
         api_->Fonts.Get(CjkFontId, ReceiveCjkFont);
 
+        if (settings_.chineseUi && !FontSupportsTraditionalChinese())
+        {
+            settings_.chineseUi = false;
+            languageWarning_ = T(
+                "目前的 Nexus 字型不支援繁體中文；已切換為英文。請在 Nexus 選項 > 樣式選擇支援 CJK 的字型後再啟用繁中。",
+                "Traditional Chinese is unavailable with the current Nexus font, so Upgrade Value switched to English. Choose a CJK-capable font in Nexus Options > Style to enable it.");
+
+            std::string saveError;
+            if (!store_->Save(settings_, saveError))
+                settingsMessage_ = saveError;
+        }
+
+        status_ = T("尚未掃描。", "Not scanned yet.");
         if (!settings_.apiKey.empty()) RefreshAsync();
     }
 
     void App::Shutdown()
     {
         if (!store_) return;
+        scanGeneration_.fetch_add(1);
         stopRequested_.store(true);
         JoinWorker();
+        refreshPending_ = false;
 
         api_->Fonts.Release(CjkFontId, ReceiveCjkFont);
         cjkFont_ = nullptr;
@@ -102,6 +118,7 @@ namespace UpgradeValue
         if (refreshing_.load() || settings_.apiKey.empty()) return;
         JoinWorker();
 
+        const uint64_t generation = scanGeneration_.fetch_add(1) + 1;
         const std::string apiKey = settings_.apiKey;
         const bool includeInfusions = settings_.includeInfusions;
         const bool chineseNames = settings_.chineseUi;
@@ -115,13 +132,13 @@ namespace UpgradeValue
                         "Reading account, item and Trading Post data...");
         }
 
-        worker_ = std::thread([this, apiKey, includeInfusions, chineseNames]
+        worker_ = std::thread([this, apiKey, includeInfusions, chineseNames, generation]
         {
             Gw2Api gw2;
             ScanResult scan = gw2.Scan(apiKey, includeInfusions, chineseNames, stopRequested_);
             if (chineseNames && scan.error.empty())
                 scan.status = "掃描完成：找到 " + std::to_string(scan.rows.size()) + " 個內嵌升級。";
-            if (!stopRequested_.load())
+            if (!stopRequested_.load() && scanGeneration_.load() == generation)
             {
                 std::lock_guard lock(resultMutex_);
                 rows_ = std::move(scan.rows);
@@ -135,9 +152,96 @@ namespace UpgradeValue
         });
     }
 
+    void App::QueueRefresh()
+    {
+        if (settings_.apiKey.empty()) return;
+
+        if (refreshing_.load())
+        {
+            scanGeneration_.fetch_add(1);
+            stopRequested_.store(true);
+            refreshPending_ = true;
+            return;
+        }
+
+        RefreshAsync();
+    }
+
+    void App::ProcessPendingRefresh()
+    {
+        if (!refreshPending_ || refreshing_.load()) return;
+        refreshPending_ = false;
+        RefreshAsync();
+    }
+
+    void App::ClearRowsForLanguageRefresh()
+    {
+        std::lock_guard lock(resultMutex_);
+        rows_.clear();
+        error_.clear();
+        status_ = T("語言已變更，正在重新掃描…",
+                    "Language changed; refreshing data...");
+    }
+
+    void App::ApplyLanguage(bool chinese)
+    {
+        if (chinese && !FontSupportsTraditionalChinese())
+        {
+            languageWarning_ = T(
+                "目前的 Nexus 字型不支援繁體中文。請在 Nexus 選項 > 樣式選擇支援 CJK 的字型後再啟用繁中。",
+                "Traditional Chinese requires a CJK-capable font. Choose one in Nexus Options > Style, then enable Traditional Chinese again.");
+            return;
+        }
+
+        if (settings_.chineseUi == chinese) return;
+
+        settings_.chineseUi = chinese;
+        languageWarning_.clear();
+        ClearRowsForLanguageRefresh();
+        SaveSettings(false);
+        QueueRefresh();
+    }
+
+    void App::EnsureLanguageSupported()
+    {
+        if (!settings_.chineseUi || !cjkFont_ || FontSupportsTraditionalChinese()) return;
+
+        settings_.chineseUi = false;
+        languageWarning_ = T(
+            "目前的 Nexus 字型不支援繁體中文；已切換為英文。請在 Nexus 選項 > 樣式選擇支援 CJK 的字型後再啟用繁中。",
+            "Traditional Chinese is unavailable with the current Nexus font, so Upgrade Value switched to English. Choose a CJK-capable font in Nexus Options > Style to enable it.");
+        ClearRowsForLanguageRefresh();
+        SaveSettings(false);
+        QueueRefresh();
+    }
+
     const char* App::T(const char* chinese, const char* english) const
     {
         return settings_.chineseUi ? chinese : english;
+    }
+
+    bool App::FontSupportsTraditionalChinese()
+    {
+        const auto* font = static_cast<const ImFont*>(cjkFont_);
+        if (!font) return false;
+
+        // Representative glyphs from "繁體中文介面". A font that cannot render
+        // these core labels cannot safely display the Traditional Chinese UI.
+        constexpr ImWchar RequiredGlyphs[] =
+        {
+            0x7E41, // 繁
+            0x9AD4, // 體
+            0x4E2D, // 中
+            0x6587, // 文
+            0x4ECB, // 介
+            0x9762, // 面
+        };
+
+        return std::all_of(std::begin(RequiredGlyphs), std::end(RequiredGlyphs),
+            [font](ImWchar glyph)
+            {
+                return font->FindGlyphNoFallback(glyph) != nullptr;
+            });
     }
 
     std::string App::Coins(int copper)
@@ -197,6 +301,8 @@ namespace UpgradeValue
 
     void App::Render()
     {
+        EnsureLanguageSupported();
+        ProcessPendingRefresh();
         if (!settings_.showWindow) return;
 
         ImGui::SetNextWindowSize(ImVec2(980.0f, 570.0f), ImGuiCond_FirstUseEver);
@@ -207,6 +313,14 @@ namespace UpgradeValue
         }
 
         FontScope fontScope(settings_.chineseUi ? static_cast<ImFont*>(cjkFont_) : nullptr);
+
+        if (!languageWarning_.empty())
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.72f, 0.25f, 1.0f));
+            ImGui::TextWrapped("%s", languageWarning_.c_str());
+            ImGui::PopStyleColor();
+            ImGui::Separator();
+        }
 
         if (settings_.apiKey.empty())
         {
@@ -269,18 +383,49 @@ namespace UpgradeValue
         const int thresholdCopper = settings_.thresholdSilver * 100;
         const ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
                                       ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY |
-                                      ImGuiTableFlags_SizingStretchProp;
+                                      ImGuiTableFlags_SizingStretchProp |
+                                      ImGuiTableFlags_Sortable | ImGuiTableFlags_SortTristate;
 
         if (ImGui::BeginTable("##UpgradeValueRows", 7, flags, ImVec2(0.0f, -1.0f)))
         {
             ImGui::TableSetupScrollFreeze(0, 1);
-            ImGui::TableSetupColumn(T("建議", "Recommendation"), ImGuiTableColumnFlags_WidthFixed, 120.0f);
-            ImGui::TableSetupColumn(T("升級", "Upgrade"), ImGuiTableColumnFlags_WidthStretch, 1.7f);
-            ImGui::TableSetupColumn(T("裝備", "Equipment"), ImGuiTableColumnFlags_WidthStretch, 1.4f);
-            ImGui::TableSetupColumn(T("位置", "Location"), ImGuiTableColumnFlags_WidthStretch, 1.8f);
-            ImGui::TableSetupColumn(T("立即賣", "Instant sell"), ImGuiTableColumnFlags_WidthFixed, 86.0f);
-            ImGui::TableSetupColumn(T("掛單", "Listing"), ImGuiTableColumnFlags_WidthFixed, 86.0f);
-            ImGui::TableSetupColumn(T("扣稅掛單", "Net listing"), ImGuiTableColumnFlags_WidthFixed, 86.0f);
+            ImGui::TableSetupColumn(T("建議", "Recommendation"),
+                ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort, 120.0f);
+            ImGui::TableSetupColumn(T("升級", "Upgrade"),
+                ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_NoSort, 1.7f);
+            ImGui::TableSetupColumn(T("裝備", "Equipment"),
+                ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_NoSort, 1.4f);
+            ImGui::TableSetupColumn(T("位置", "Location"),
+                ImGuiTableColumnFlags_WidthStretch |
+                ImGuiTableColumnFlags_PreferSortAscending,
+                1.8f, LocationColumnId);
+            ImGui::TableSetupColumn(T("立即賣", "Instant sell"),
+                ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort, 86.0f);
+            ImGui::TableSetupColumn(T("掛單", "Listing"),
+                ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort, 86.0f);
+            ImGui::TableSetupColumn(T("扣稅掛單", "Net listing"),
+                ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort, 86.0f);
+
+            ImGuiTableSortSpecs* sortSpecs = ImGui::TableGetSortSpecs();
+            if (sortSpecs)
+            {
+                if (sortSpecs->SpecsCount == 1 &&
+                    sortSpecs->Specs[0].ColumnUserID == LocationColumnId)
+                {
+                    const bool ascending =
+                        sortSpecs->Specs[0].SortDirection == ImGuiSortDirection_Ascending;
+                    std::stable_sort(rows.begin(), rows.end(),
+                        [ascending](const ResultRow& a, const ResultRow& b)
+                        {
+                            if (a.location == b.location) return false;
+                            return ascending
+                                ? a.location < b.location
+                                : a.location > b.location;
+                        });
+                }
+                sortSpecs->SpecsDirty = false;
+            }
+
             ImGui::TableHeadersRow();
 
             for (const auto& row : rows)
@@ -363,17 +508,57 @@ namespace UpgradeValue
         }
         settingsMessage_ = T("設定已儲存；API Key 已用 Windows DPAPI 加密。",
                              "Settings saved; the API key is encrypted with Windows DPAPI.");
-        if (refreshAfterSave && !refreshing_.load()) RefreshAsync();
+        if (refreshAfterSave) QueueRefresh();
     }
 
     void App::RenderOptions()
     {
+        EnsureLanguageSupported();
+        ProcessPendingRefresh();
         FontScope fontScope(settings_.chineseUi ? static_cast<ImFont*>(cjkFont_) : nullptr);
         ImGui::Separator();
         ImGui::TextUnformatted("Upgrade Value");
         ImGui::Separator();
         ImGui::Checkbox(T("顯示主視窗", "Show main window"), &settings_.showWindow);
-        ImGui::Checkbox(T("繁體中文介面", "Traditional Chinese UI"), &settings_.chineseUi);
+
+        ImGui::TextUnformatted("Language");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(230.0f);
+        const bool cjkAvailable = FontSupportsTraditionalChinese();
+        const char* languagePreview =
+            settings_.chineseUi ? "Traditional Chinese" : "English";
+        if (ImGui::BeginCombo("##UpgradeValueLanguage", languagePreview))
+        {
+            if (ImGui::Selectable("English", !settings_.chineseUi))
+                ApplyLanguage(false);
+
+            if (cjkAvailable)
+            {
+                if (ImGui::Selectable("Traditional Chinese", settings_.chineseUi))
+                    ApplyLanguage(true);
+            }
+            else
+            {
+                ImGui::Selectable(
+                    "Traditional Chinese (CJK font required)",
+                    false, ImGuiSelectableFlags_Disabled);
+            }
+            ImGui::EndCombo();
+        }
+
+        if (!cjkAvailable)
+        {
+            ImGui::TextWrapped(
+                "Choose a CJK-capable font in Nexus Options > Style to enable Traditional Chinese.");
+        }
+
+        if (!languageWarning_.empty())
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.72f, 0.25f, 1.0f));
+            ImGui::TextWrapped("%s", languageWarning_.c_str());
+            ImGui::PopStyleColor();
+        }
+
         ImGui::Checkbox(T("包含灌注（僅顯示價格，不建議黑獅）",
                           "Include infusions (price only; never recommends Black Lion)"),
                         &settings_.includeInfusions);

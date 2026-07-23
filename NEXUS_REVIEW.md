@@ -2,7 +2,7 @@
 
 **English** · [繁體中文](NEXUS_REVIEW.zh-Hant.md)
 
-This document gives Raidcore Nexus reviewers a source-backed summary of Upgrade Value's behavior and review surface. It describes addon version `1.0.3.0`, built against the vendored Nexus API version `6`.
+This document gives Raidcore Nexus reviewers a source-backed summary of Upgrade Value's behavior and review surface. It describes addon version `1.0.4.0`, built against the vendored Nexus API version `6`.
 
 **Listing status:** Upgrade Value `v1.0.3` was made public in the Nexus Addon Library after Raidcore's initial review. The public listing is [ID 128](https://raidcore.gg/gw2/addons/upgrade-value).
 
@@ -23,11 +23,12 @@ This document gives Raidcore Nexus reviewers a source-backed summary of Upgrade 
 
 ## What the addon does
 
-1. If a saved API key exists, the addon starts a background scan after loading. Users can also start a scan with **Refresh** or **Save and scan**.
-2. It validates the key and reads account, bank, shared inventory, character inventory, and currently equipped-item snapshots from the official Guild Wars 2 v2 API.
-3. It reads embedded upgrade IDs from the API's `upgrades[]` and optional `infusions[]` fields.
-4. It requests public item metadata and Trading Post prices from the official API.
-5. It displays the results in an ImGui table and calculates a recommendation from the user-selected market value and threshold.
+1. The addon defaults to English and checks whether Nexus `FONT_DEFAULT` contains representative Traditional Chinese glyphs before honoring a saved Traditional Chinese preference. If the glyphs are unavailable, it saves English mode and displays a readable warning.
+2. If a saved API key exists, the addon starts a background scan after loading. Users can also start a scan with **Refresh** or **Save and scan**.
+3. It validates the key and reads account, bank, shared inventory, character inventory, and currently equipped-item snapshots from the official Guild Wars 2 v2 API.
+4. It reads embedded upgrade IDs from the API's `upgrades[]` and optional `infusions[]` fields.
+5. It requests public item metadata and Trading Post prices from the official API.
+6. It displays the results in an ImGui table, supports three-state Location sorting, and calculates a recommendation from the user-selected market value and threshold.
 
 The addon does not call any API that changes account state, and it does not perform an in-game action on the player's behalf.
 
@@ -75,7 +76,7 @@ The vendored source consists of the public Raidcore Nexus header, Raidcore's Dea
 | `InputBinds.RegisterWithString` / `Deregister` | One toggle keybind, default `Alt + Shift + U` |
 | `UI.RegisterCloseOnEscape` / `DeregisterCloseOnEscape` | Closes the addon window with Escape |
 | `Paths.GetAddonDirectory` | Selects the writable settings directory |
-| `Fonts.Get` / `Release` | Uses Nexus `FONT_DEFAULT` for Traditional Chinese glyphs |
+| `Fonts.Get` / `Release` | Acquires Nexus `FONT_DEFAULT`, verifies representative CJK glyphs before enabling Traditional Chinese, and falls back to English when unavailable |
 | `Log` | Writes load and unload messages |
 | GitHub update provider metadata | Allows Nexus to manage updates from this public repository |
 
@@ -121,6 +122,7 @@ The local storage implementation is in [`src/Settings.cpp`](src/Settings.cpp).
 
 - Network and JSON work runs on one owned `std::thread`, outside the render callback.
 - Shared results are protected by a mutex.
+- Language changes invalidate the active scan generation, request cancellation, and queue a scan in the newly selected language so stale results cannot replace current rows.
 - Unload sets a cancellation flag and joins the worker before destroying addon state.
 - WinHTTP requests use bounded connection, send, receive, and resolution timeouts. Unload may wait for the current bounded request to finish, but it does not detach the worker.
 - All Nexus registrations and the acquired font are released during unload.
@@ -130,7 +132,7 @@ The local storage implementation is in [`src/Settings.cpp`](src/Settings.cpp).
 - Target: Windows x64 DLL.
 - Export: `GetAddonDef` with C linkage.
 - Addon signature: `-26071501`.
-- Addon version: `1.0.3.0`.
+- Addon version: `1.0.4.0`.
 - Nexus API version: `6`.
 - Update provider: Nexus GitHub provider.
 - Build command:
