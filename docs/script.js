@@ -4,6 +4,8 @@
   const root = document.documentElement;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const finePointer = window.matchMedia("(pointer: fine)");
+  const coarsePointer = window.matchMedia("(pointer: coarse)");
+  const supportsObserver = "IntersectionObserver" in window;
 
   root.classList.add("js");
 
@@ -18,7 +20,7 @@
 
   const revealContent = () => {
     const targets = document.querySelectorAll(".reveal");
-    if (reduceMotion.matches || !("IntersectionObserver" in window)) {
+    if (reduceMotion.matches || !supportsObserver) {
       targets.forEach((target) => target.classList.add("is-visible"));
       return;
     }
@@ -59,10 +61,18 @@
     window.requestAnimationFrame(step);
   };
 
+  const setCounterFinal = (element) => {
+    const target = Number.parseInt(element.dataset.count || "0", 10);
+    const suffix = element.dataset.suffix || "";
+    if (!Number.isFinite(target)) return;
+    element.dataset.animated = "true";
+    element.textContent = `${target}${suffix}`;
+  };
+
   const initializeCounters = () => {
     const counters = document.querySelectorAll("[data-count]");
-    if (reduceMotion.matches || !("IntersectionObserver" in window)) {
-      counters.forEach(animateCounter);
+    if (reduceMotion.matches || !supportsObserver) {
+      counters.forEach(setCounterFinal);
       return;
     }
 
@@ -77,17 +87,15 @@
     counters.forEach((counter) => observer.observe(counter));
   };
 
-  const initializeFlow = () => {
+  const initializeFlows = () => {
     const flows = document.querySelectorAll("[data-flow]");
-    if (reduceMotion.matches || !("IntersectionObserver" in window)) return;
+    if (reduceMotion.matches || !supportsObserver) return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-flowing");
-        observer.unobserve(entry.target);
+        entry.target.classList.toggle("is-flowing", entry.isIntersecting);
       });
-    }, { rootMargin: "0px 0px -14%", threshold: 0.32 });
+    }, { rootMargin: "-12% 0px -12%", threshold: 0.2 });
 
     flows.forEach((flow) => observer.observe(flow));
   };
@@ -128,7 +136,7 @@
       .map((link) => document.querySelector(link.getAttribute("href")))
       .filter(Boolean);
 
-    if (!("IntersectionObserver" in window)) return;
+    if (!supportsObserver) return;
 
     const spy = new IntersectionObserver((entries) => {
       const visible = entries
@@ -146,70 +154,111 @@
     sections.forEach((section) => spy.observe(section));
   };
 
-  const initializeScrollProgress = () => {
-    let ticking = false;
+  const initializeScrollEffects = () => {
+    let frame = 0;
 
     const update = () => {
       const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      root.style.setProperty("--scroll-progress", String(Math.min(1, window.scrollY / max)));
-      ticking = false;
+      const progress = Math.min(1, window.scrollY / max);
+      root.style.setProperty("--scroll-progress", String(progress));
+      root.style.setProperty("--ambient-y", `${(-64 * progress).toFixed(2)}px`);
+      frame = 0;
     };
 
-    window.addEventListener("scroll", () => {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(update);
-    }, { passive: true });
+    const schedule = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
 
-    window.addEventListener("resize", update, { passive: true });
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
     update();
   };
 
+  const addRafPointerEffect = (element, update, reset) => {
+    let frame = 0;
+    let point = null;
+
+    element.addEventListener("pointermove", (event) => {
+      point = { x: event.clientX, y: event.clientY };
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        if (point) update(point);
+      });
+    }, { passive: true });
+
+    const clear = () => {
+      point = null;
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      reset();
+    };
+
+    element.addEventListener("pointerleave", clear, { passive: true });
+    element.addEventListener("pointercancel", clear, { passive: true });
+    element.addEventListener("mouseleave", clear, { passive: true });
+  };
+
   const initializePointerEffects = () => {
-    if (!finePointer.matches || reduceMotion.matches) return;
+    if (!finePointer.matches || coarsePointer.matches || reduceMotion.matches) return;
 
     document.querySelectorAll("[data-tilt]").forEach((card) => {
-      card.addEventListener("pointermove", (event) => {
+      addRafPointerEffect(card, (point) => {
         const rect = card.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width - 0.5;
-        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        const x = (point.x - rect.left) / rect.width - 0.5;
+        const y = (point.y - rect.top) / rect.height - 0.5;
         card.style.setProperty("--tilt-y", `${(x * 4).toFixed(2)}deg`);
         card.style.setProperty("--tilt-x", `${(-y * 3).toFixed(2)}deg`);
-      });
-      card.addEventListener("pointerleave", () => {
+      }, () => {
         card.style.removeProperty("--tilt-x");
         card.style.removeProperty("--tilt-y");
       });
     });
 
     document.querySelectorAll(".spotlight").forEach((card) => {
-      card.addEventListener("pointermove", (event) => {
+      addRafPointerEffect(card, (point) => {
         const rect = card.getBoundingClientRect();
-        card.style.setProperty("--pointer-x", `${event.clientX - rect.left}px`);
-        card.style.setProperty("--pointer-y", `${event.clientY - rect.top}px`);
+        card.style.setProperty("--pointer-x", `${point.x - rect.left}px`);
+        card.style.setProperty("--pointer-y", `${point.y - rect.top}px`);
+      }, () => {
+        card.style.removeProperty("--pointer-x");
+        card.style.removeProperty("--pointer-y");
       });
     });
 
     const hero = document.querySelector(".hero");
     if (hero) {
-      hero.addEventListener("pointermove", (event) => {
-        const x = event.clientX / window.innerWidth - 0.5;
-        const y = event.clientY / window.innerHeight - 0.5;
+      addRafPointerEffect(hero, (point) => {
+        const x = point.x / window.innerWidth - 0.5;
+        const y = point.y / window.innerHeight - 0.5;
         hero.style.setProperty("--art-x", `${(x * -10).toFixed(1)}px`);
         hero.style.setProperty("--art-y", `${(y * -7).toFixed(1)}px`);
-      });
-      hero.addEventListener("pointerleave", () => {
+        hero.style.setProperty("--hero-light-x", `${(x * 12).toFixed(1)}px`);
+        hero.style.setProperty("--hero-light-y", `${(y * 9).toFixed(1)}px`);
+      }, () => {
         hero.style.removeProperty("--art-x");
         hero.style.removeProperty("--art-y");
+        hero.style.removeProperty("--hero-light-x");
+        hero.style.removeProperty("--hero-light-y");
       });
     }
+  };
+
+  const initializeVisibilityPause = () => {
+    const update = () => root.classList.toggle("page-hidden", document.hidden);
+    document.addEventListener("visibilitychange", update);
+    update();
   };
 
   setRevealDelays();
   revealContent();
   initializeCounters();
-  initializeFlow();
+  initializeFlows();
   initializeNavigation();
-  initializeScrollProgress();
+  initializeScrollEffects();
   initializePointerEffects();
+  initializeVisibilityPause();
 })();

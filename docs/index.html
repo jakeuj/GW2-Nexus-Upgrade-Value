@@ -67,6 +67,12 @@
   <body>
     <a class="skip-link" href="#main-content">跳到主要內容</a>
     <div class="scroll-progress" aria-hidden="true"><span></span></div>
+    <div class="world-lighting motion-layer" aria-hidden="true">
+      <span class="world-aura aura-violet"></span>
+      <span class="world-aura aura-cyan"></span>
+      <span class="world-ley-line ley-line-one"><i></i></span>
+      <span class="world-ley-line ley-line-two"><i></i></span>
+    </div>
 
     <header class="site-header" data-header>
       <a class="brand" href="#top" aria-label="jakeuj GW2 Tools，回到頁面頂端">
@@ -90,6 +96,13 @@
     <main id="main-content">
       <section id="top" class="hero" aria-labelledby="page-title">
         <div class="hero-art" aria-hidden="true"></div>
+        <div class="hero-atmosphere motion-layer" aria-hidden="true">
+          <span class="hero-aurora aurora-violet"></span>
+          <span class="hero-aurora aurora-cyan"></span>
+          <span class="hero-waypoint waypoint-one"><i></i></span>
+          <span class="hero-waypoint waypoint-two"><i></i></span>
+          <span class="hero-waypoint waypoint-three"><i></i></span>
+        </div>
         <div class="hero-grid shell">
           <div class="hero-copy reveal">
             <p class="eyebrow">Guild Wars 2 · Nexus Addon</p>
@@ -115,13 +128,23 @@
           </div>
 
           <div class="hero-stage reveal" data-reveal-delay="120">
+            <div class="value-energy motion-layer" aria-hidden="true">
+              <span class="energy-route route-inventory"><i></i></span>
+              <span class="energy-route route-price"><i></i></span>
+              <span class="energy-route route-decision"><i></i></span>
+              <span class="energy-waypoint energy-waypoint-one"></span>
+              <span class="energy-waypoint energy-waypoint-two"></span>
+            </div>
             <div class="value-orbit" aria-hidden="true">
               <span class="orbit-ring ring-one"></span>
               <span class="orbit-ring ring-two"></span>
+              <span class="orbit-ring ring-three"></span>
+              <span class="orbit-node node-inventory">INV</span>
               <span class="orbit-node node-price">TP</span>
               <span class="orbit-node node-safe">✓</span>
             </div>
             <figure class="product-shot tilt-card" data-tilt>
+              <span class="shot-scan motion-layer" aria-hidden="true"></span>
               <div class="shot-bar">
                 <span><i aria-hidden="true"></i>Upgrade Value</span>
                 <span>Exotic Upgrade Scanner</span>
@@ -133,6 +156,7 @@
               </picture>
               <figcaption><span>實際遊戲畫面</span><strong>繁體中文介面</strong></figcaption>
             </figure>
+            <div class="signal-note scan-note" aria-hidden="true"><i></i><span><strong>ACCOUNT</strong>裝備快照</span></div>
             <div class="signal-note price-note" aria-hidden="true"><i></i><span><strong>LIVE TP</strong>即時價格</span></div>
             <div class="signal-note privacy-note" aria-hidden="true"><i></i><span><strong>LOCAL</strong>DPAPI 保護</span></div>
           </div>
@@ -178,9 +202,9 @@
         </div>
         <div class="decision-flow reveal" data-flow data-reveal-delay="100" aria-label="分解建議流程">
           <div class="flow-card"><span>1</span><strong>找到內嵌升級</strong><small>符文或印記</small></div>
-          <i aria-hidden="true">→</i>
+          <i class="flow-link" aria-hidden="true">→<span></span></i>
           <div class="flow-card"><span>2</span><strong>取得 TP 價格</strong><small>立即賣／扣稅掛單</small></div>
-          <i aria-hidden="true">→</i>
+          <i class="flow-link" aria-hidden="true">→<span></span></i>
           <div class="flow-card highlight"><span>3</span><strong>比較自訂門檻</strong><small>使用黑獅或一般分解</small></div>
         </div>
       </section>
@@ -195,7 +219,7 @@
             </p>
           </div>
 
-          <div class="review-status reveal" role="note" aria-label="目前 Nexus 上架狀態">
+          <div class="review-status reveal" data-flow role="note" aria-label="目前 Nexus 上架狀態">
             <span class="review-status-dot" aria-hidden="true"></span>
             <div>
               <strong>目前狀態：已公開上架 Nexus Addon Library</strong>
@@ -270,7 +294,7 @@
             <p class="eyebrow">First Install · Four Steps</p>
             <h2 id="install-title">安裝與開始掃描</h2>
           </div>
-          <ol class="steps">
+          <ol class="steps" data-flow>
             <li class="reveal"><span>1</span><div><strong>安裝 Nexus</strong><p>先安裝 Raidcore Nexus，並確認能在遊戲中開啟 Nexus 設定。</p></div></li>
             <li class="reveal" data-reveal-delay="70"><span>2</span><div><strong>開啟插件庫</strong><p>啟動 Guild Wars 2，在 Nexus 內開啟 Addon Library。</p></div></li>
             <li class="reveal" data-reveal-delay="140"><span>3</span><div><strong>搜尋並安裝</strong><p>找到 <code>Upgrade Value</code>，直接從遊戲內插件庫安裝並載入。</p></div></li>
@@ -331,7 +355,7 @@
         </div>
       </section>
 
-      <section id="download" class="release-cta shell reveal" aria-labelledby="download-title">
+      <section id="download" class="release-cta shell reveal" data-flow aria-labelledby="download-title">
         <div class="release-sigil" aria-hidden="true"><span></span></div>
         <div>
           <p class="eyebrow">Stable Release</p>
