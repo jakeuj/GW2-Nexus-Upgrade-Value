@@ -1558,6 +1558,10 @@ code {
   box-shadow: 0 25px 62px rgba(0, 0, 0, 0.24);
 }
 
+.gallery-main {
+  grid-row: 1 / span 2;
+}
+
 .gallery .tilt-card {
   transform:
     perspective(1200px)
@@ -1578,8 +1582,12 @@ code {
 
 .gallery figure:not(.gallery-main) img {
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: left top;
+}
+
+.gallery-main img {
+  height: auto;
 }
 
 .gallery figcaption {
@@ -2557,6 +2565,10 @@ code {
 
   .gallery {
     grid-template-columns: 1fr;
+  }
+
+  .gallery-main {
+    grid-row: auto;
   }
 
   .gallery figure:not(.gallery-main) img {
