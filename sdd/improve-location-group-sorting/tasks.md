@@ -6,8 +6,8 @@
 - [x] 4. 將版本升至 `1.0.5.0`，同步雙語 README、Nexus review 與網站內容。
 - [x] 5. 執行本機不變量、網站、JavaScript／XML 與差異檢查。
 - [x] 6. 建立 follow-up issue 與 Draft PR，以 Windows CI 建置並驗證 DLL。
-- [ ] 7. 在 CrossOver 載入 CI DLL，完成排序、估價切換、語言、API Key 與生命週期驗收。
-- [ ] 8. 更新真實遊戲截圖、衍生圖片與測試紀錄，完成合併前驗證。
+- [x] 7. 在 CrossOver 載入 CI DLL，完成排序、估價切換、語言、API Key 與生命週期驗收。
+- [x] 8. 更新真實遊戲截圖、衍生圖片與測試紀錄，完成合併前驗證。
 - [ ] 9. 發布 `v1.0.5`，確認 Release、latest download、GitHub Pages 並關閉 follow-up issue。
 
 ## 驗收條件
