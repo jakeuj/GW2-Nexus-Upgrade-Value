@@ -7,7 +7,7 @@
 
 Scan Exotic equipment across your Guild Wars 2 account, list embedded runes and sigils with live Trading Post prices, and decide whether they are worth extracting with a Black Lion Salvage Kit.
 
-Current stable release: [**v1.0.4**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.4)
+Current stable release: [**v1.0.5**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.5)
 
 Project website: [gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
 
@@ -27,7 +27,7 @@ Codex assisted with project documentation and development review. This assistanc
 ## Manual download
 
 - [Download `UpgradeValue.dll` directly](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
-- [Download `UpgradeValue-v1.0.4.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.4/UpgradeValue-v1.0.4.zip)
+- [Download `UpgradeValue-v1.0.5.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.5/UpgradeValue-v1.0.5.zip)
 - [View all releases and release notes](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
 
 > [!IMPORTANT]
@@ -46,9 +46,9 @@ Codex assisted with project documentation and development review. This assistanc
 
 ### Upgrade values and salvage recommendations
 
-![Upgrade Value main window with Location sorted in ascending order](screenshots/upgrade-value-main.png)
+![Upgrade Value main window grouping Location by character with higher-value upgrades first](screenshots/upgrade-value-main.png)
 
-The main window lists embedded upgrades, their equipment and location, instant-sell prices, lowest listings, and listing values after the 15% Trading Post fee. Select the **Location** header to group results by character or storage location.
+The main window lists embedded upgrades, their equipment and location, instant-sell prices, lowest listings, and listing values after the 15% Trading Post fee. Select the **Location** header to group results by character or storage area; each group keeps the highest currently selected decision value first.
 
 ### Nexus settings
 
@@ -62,7 +62,8 @@ Enter an API key, choose English or Traditional Chinese when the current Nexus f
 - Reads embedded runes and sigils from each item instance's `upgrades[]` field.
 - English is the default interface language. Traditional Chinese mode requests official API names with `lang=zh` and converts them to Traditional Chinese through Windows.
 - Before enabling Traditional Chinese, the addon checks whether Nexus `FONT_DEFAULT` provides representative CJK glyphs. If not, it uses English and points the user to the Nexus font setting instead of displaying `?`.
-- The **Location** column supports ascending, descending, and original value-order sorting while keeping equal locations stable.
+- The **Location** column groups account bank slots, shared inventory slots, and each character. Ascending or descending changes group order only; each group keeps the selected decision value highest first, and the third state restores global value order.
+- Switching **Use net listing value** immediately reorders both the global list and Location groups by Net listing instead of Instant sell, without another scan.
 - Queries the official `/v2/commerce/prices` endpoint in batches:
   - `Instant sell`: current highest buy order.
   - `Listing`: current lowest sell listing.
@@ -109,7 +110,7 @@ Do not place it inside the `addons\Nexus` subdirectory.
 2. Select **Refresh** to retrieve the current account equipment and latest Trading Post prices.
 3. Set the **Black Lion threshold (silver)**; the default is 50 silver.
 4. Enable **Use net listing value** to base recommendations on the net listing value; otherwise, the addon uses the instant-sell value.
-5. Select the **Location** header to cycle through ascending, descending, and original value order.
+5. Select the **Location** header to cycle through ascending groups, descending groups, and global selected-value order. Items inside each group remain highest-value first.
 6. Use the search field to filter by equipment, upgrade name, or location.
 
 The Recommendation column may display:
@@ -136,7 +137,7 @@ The repository includes the Nexus API header, the Raidcore ImGui fork, and nlohm
 ## CI/CD and releases
 
 - [Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml) automatically runs a Windows x64 Release build and uploads artifacts when changes are pushed to `main` or a pull request is created.
-- Pushing a tag that matches `v*`, such as `v1.0.4`, automatically creates a GitHub Release with the DLL and ZIP files.
+- Pushing a tag that matches `v*`, such as `v1.0.5`, automatically creates a GitHub Release with the DLL and ZIP files.
 - You can also open **Actions → Build and release → Run workflow** and enter a version to publish manually. The version must match the addon version in `src/entry.cpp`.
 - GitHub Release Notes are generated automatically from the commits included in the release.
 

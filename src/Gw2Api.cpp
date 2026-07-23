@@ -399,15 +399,6 @@ namespace UpgradeValue
             for (const int id : instance.infusions) append(id, true);
         }
 
-        std::sort(result.rows.begin(), result.rows.end(), [](const ResultRow& a, const ResultRow& b)
-        {
-            const int av = std::max(a.instantSell, a.netListing);
-            const int bv = std::max(b.instantSell, b.netListing);
-            if (av != bv) return av > bv;
-            if (a.upgradeName != b.upgradeName) return a.upgradeName < b.upgradeName;
-            return a.location < b.location;
-        });
-
         result.status = "Scan complete: " + std::to_string(result.rows.size()) +
                         " embedded upgrades found";
         return result;

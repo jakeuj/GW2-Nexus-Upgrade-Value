@@ -2,7 +2,7 @@
 
 **English** · [繁體中文](NEXUS_REVIEW.zh-Hant.md)
 
-This document gives Raidcore Nexus reviewers a source-backed summary of Upgrade Value's behavior and review surface. It describes addon version `1.0.4.0`, built against the vendored Nexus API version `6`.
+This document gives Raidcore Nexus reviewers a source-backed summary of Upgrade Value's behavior and review surface. It describes addon version `1.0.5.0`, built against the vendored Nexus API version `6`.
 
 **Listing status:** Upgrade Value `v1.0.3` was made public in the Nexus Addon Library after Raidcore's initial review. The public listing is [ID 128](https://raidcore.gg/gw2/addons/upgrade-value).
 
@@ -28,7 +28,7 @@ This document gives Raidcore Nexus reviewers a source-backed summary of Upgrade 
 3. It validates the key and reads account, bank, shared inventory, character inventory, and currently equipped-item snapshots from the official Guild Wars 2 v2 API.
 4. It reads embedded upgrade IDs from the API's `upgrades[]` and optional `infusions[]` fields.
 5. It requests public item metadata and Trading Post prices from the official API.
-6. It displays the results in an ImGui table, supports three-state Location sorting, and calculates a recommendation from the user-selected market value and threshold.
+6. It displays the results in an ImGui table and calculates a recommendation from the user-selected market value and threshold. Three-state Location sorting groups rows by character or storage area while keeping the selected value highest first inside every group; the unsorted state uses that value globally.
 
 The addon does not call any API that changes account state, and it does not perform an in-game action on the player's behalf.
 
@@ -132,7 +132,7 @@ The local storage implementation is in [`src/Settings.cpp`](src/Settings.cpp).
 - Target: Windows x64 DLL.
 - Export: `GetAddonDef` with C linkage.
 - Addon signature: `-26071501`.
-- Addon version: `1.0.4.0`.
+- Addon version: `1.0.5.0`.
 - Nexus API version: `6`.
 - Update provider: Nexus GitHub provider.
 - Build command:
