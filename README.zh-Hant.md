@@ -46,13 +46,13 @@ Codex 曾協助專案文件與開發審查。此項協助會依 Raidcore 的 **A
 
 ### 升級價格與分解建議
 
-![Upgrade Value 主視窗](screenshots/upgrade-value-main.png)
+![Upgrade Value 主視窗，位置欄目前為升冪排序](screenshots/upgrade-value-main.png)
 
 主視窗會列出內嵌升級、所在裝備與位置，以及立即賣、最低掛單和扣除 15% 交易所費用後的掛單價值。點擊「位置」欄標題可按角色或儲存位置集中查看結果。
 
 ### Nexus 設定
 
-![Upgrade Value Nexus 設定](screenshots/upgrade-value-settings.png)
+![Upgrade Value Nexus 設定，已選擇英文，且目前字型缺少 CJK 字形而停用繁體中文](screenshots/upgrade-value-settings.png)
 
 可在 Nexus 設定中輸入 API Key、選擇英文或目前 Nexus 字型支援的繁體中文、選擇是否顯示灌注，並調整快捷鍵。
 

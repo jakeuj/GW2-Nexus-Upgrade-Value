@@ -46,13 +46,13 @@ Codex assisted with project documentation and development review. This assistanc
 
 ### Upgrade values and salvage recommendations
 
-![Upgrade Value main window](screenshots/upgrade-value-main.png)
+![Upgrade Value main window with Location sorted in ascending order](screenshots/upgrade-value-main.png)
 
 The main window lists embedded upgrades, their equipment and location, instant-sell prices, lowest listings, and listing values after the 15% Trading Post fee. Select the **Location** header to group results by character or storage location.
 
 ### Nexus settings
 
-![Upgrade Value Nexus settings](screenshots/upgrade-value-settings.png)
+![Upgrade Value Nexus settings with English selected and Traditional Chinese disabled because the current font lacks CJK glyphs](screenshots/upgrade-value-settings.png)
 
 Enter an API key, choose English or Traditional Chinese when the current Nexus font supports it, choose whether to display infusions, and configure the keybind in the Nexus settings.
 

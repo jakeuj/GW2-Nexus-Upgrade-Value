@@ -6,8 +6,8 @@
 - [x] 4. 將版本升至 `1.0.4.0`，同步雙語 README、Nexus review 與網站行為說明。
 - [x] 5. 擴充 repository invariant checker，涵蓋英文預設、字形防護、語言選單與 Location 排序。
 - [x] 6. 執行本機不變量、差異、網站靜態檢查與可用的編譯前驗證。
-- [ ] 7. 在 Windows `Release|x64` 建置並完成 Nexus／GW2 實機 smoke test。
-- [ ] 8. 擷取新設定與 Location 排序畫面，更新 README 與網站衍生圖片。
+- [x] 7. 在 Windows `Release|x64` 建置並完成 Nexus／GW2 實機 smoke test。
+- [x] 8. 擷取新設定與 Location 排序畫面，更新 README 與網站衍生圖片。
 - [ ] 9. 發布 `v1.0.4`，確認 Release 資產與 latest DLL，並回覆 issue #7。
 
 ## 驗收條件
