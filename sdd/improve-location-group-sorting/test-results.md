@@ -10,6 +10,8 @@
 - XML validation：Pass
 - Python checker AST：Pass
 - `git diff --check`：Pass
+- 桌面版 1280px：Pass（無水平溢位、版本與新版主畫面可見、console 無 error／warning）
+- 行動版 390px：Pass（無水平溢位、導覽選單可展開、console 無 error／warning）
 
 ## Windows 建置
 
@@ -49,7 +51,8 @@
 
 ## 發布截圖
 
-- Main：Pending（真實遊戲畫面，顯示 Location 箭頭及同一角色內高價項目優先）。
+- Main：Pass（真實遊戲畫面，顯示 Location 升冪箭頭、角色／儲存區群組及同一角色內高價項目優先）。
+- 已同步 `screenshots/upgrade-value-main.png`、網站 PNG fallback，以及 640／960px AVIF、WebP 衍生圖。
 
 ## 正式發布驗證
 
