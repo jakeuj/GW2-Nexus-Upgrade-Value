@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <iterator>
 #include <sstream>
+#include <string_view>
 
 #include "Gw2Api.h"
 #include "imgui/imgui.h"
@@ -48,6 +49,96 @@ namespace UpgradeValue
                 case UpgradeKind::Infusion: return chinese ? "灌注" : "Infusion";
                 default: return chinese ? "升級" : "Upgrade";
             }
+        }
+
+        std::string LocationGroupKey(const std::string& location)
+        {
+            if (location.rfind("Account Bank #", 0) == 0)
+                return "Account Bank";
+            if (location.rfind("Shared Inventory #", 0) == 0)
+                return "Shared Inventory";
+
+            const size_t separator = location.find(" / ");
+            if (separator != std::string::npos && separator > 0)
+                return location.substr(0, separator);
+
+            return location;
+        }
+
+        int SelectedValue(const ResultRow& row, bool useNetListing)
+        {
+            return useNetListing ? row.netListing : row.instantSell;
+        }
+
+        bool ValueOrderLess(const ResultRow& a, const ResultRow& b, bool useNetListing)
+        {
+            const int aValue = SelectedValue(a, useNetListing);
+            const int bValue = SelectedValue(b, useNetListing);
+            if (aValue != bValue) return aValue > bValue;
+            if (a.location != b.location) return a.location < b.location;
+            if (a.upgradeName != b.upgradeName) return a.upgradeName < b.upgradeName;
+            if (a.gearName != b.gearName) return a.gearName < b.gearName;
+            if (a.upgradeId != b.upgradeId) return a.upgradeId < b.upgradeId;
+            return a.gearId < b.gearId;
+        }
+
+        int NaturalNameCompare(std::string_view lhs, std::string_view rhs)
+        {
+            size_t left = 0;
+            size_t right = 0;
+
+            while (left < lhs.size() && right < rhs.size())
+            {
+                const unsigned char leftChar = static_cast<unsigned char>(lhs[left]);
+                const unsigned char rightChar = static_cast<unsigned char>(rhs[right]);
+
+                if (std::isdigit(leftChar) && std::isdigit(rightChar))
+                {
+                    const size_t leftRun = left;
+                    const size_t rightRun = right;
+                    while (left < lhs.size() && lhs[left] == '0') ++left;
+                    while (right < rhs.size() && rhs[right] == '0') ++right;
+
+                    size_t leftEnd = left;
+                    size_t rightEnd = right;
+                    while (leftEnd < lhs.size() &&
+                           std::isdigit(static_cast<unsigned char>(lhs[leftEnd]))) ++leftEnd;
+                    while (rightEnd < rhs.size() &&
+                           std::isdigit(static_cast<unsigned char>(rhs[rightEnd]))) ++rightEnd;
+
+                    const size_t leftDigits = leftEnd - left;
+                    const size_t rightDigits = rightEnd - right;
+                    if (leftDigits != rightDigits) return leftDigits < rightDigits ? -1 : 1;
+
+                    const int numberCompare = lhs.substr(left, leftDigits).compare(
+                        rhs.substr(right, rightDigits));
+                    if (numberCompare != 0) return numberCompare < 0 ? -1 : 1;
+
+                    const size_t leftRunLength = leftEnd - leftRun;
+                    const size_t rightRunLength = rightEnd - rightRun;
+                    if (leftRunLength != rightRunLength)
+                        return leftRunLength < rightRunLength ? -1 : 1;
+
+                    left = leftEnd;
+                    right = rightEnd;
+                    continue;
+                }
+
+                const unsigned char foldedLeft = leftChar < 0x80
+                    ? static_cast<unsigned char>(std::tolower(leftChar))
+                    : leftChar;
+                const unsigned char foldedRight = rightChar < 0x80
+                    ? static_cast<unsigned char>(std::tolower(rightChar))
+                    : rightChar;
+                if (foldedLeft != foldedRight) return foldedLeft < foldedRight ? -1 : 1;
+                ++left;
+                ++right;
+            }
+
+            if (left != lhs.size() || right != rhs.size())
+                return left == lhs.size() ? -1 : 1;
+            if (lhs == rhs) return 0;
+            return lhs < rhs ? -1 : 1;
         }
     }
 
@@ -376,6 +467,21 @@ namespace UpgradeValue
         else
             ImGui::TextDisabled("%s", status.c_str());
 
+        rows.erase(std::remove_if(rows.begin(), rows.end(),
+            [this](const ResultRow& row)
+            {
+                return !ContainsInsensitive(row.upgradeName, searchBuffer_.data()) &&
+                       !ContainsInsensitive(row.gearName, searchBuffer_.data()) &&
+                       !ContainsInsensitive(row.location, searchBuffer_.data());
+            }), rows.end());
+
+        const bool useNetListing = settings_.useNetListing;
+        std::sort(rows.begin(), rows.end(),
+            [useNetListing](const ResultRow& a, const ResultRow& b)
+            {
+                return ValueOrderLess(a, b, useNetListing);
+            });
+
         ImGui::TextWrapped("%s", T(
             "橘色是特異（Exotic）；紫色才是傳奇。傳奇裝備絕對不應分解。灌注不會被黑獅分解器取回。",
             "Orange is Exotic; purple is Legendary. Never salvage Legendary equipment. Black Lion kits do not recover infusions."));
@@ -417,10 +523,11 @@ namespace UpgradeValue
                     std::stable_sort(rows.begin(), rows.end(),
                         [ascending](const ResultRow& a, const ResultRow& b)
                         {
-                            if (a.location == b.location) return false;
-                            return ascending
-                                ? a.location < b.location
-                                : a.location > b.location;
+                            const std::string aGroup = LocationGroupKey(a.location);
+                            const std::string bGroup = LocationGroupKey(b.location);
+                            const int groupCompare = NaturalNameCompare(aGroup, bGroup);
+                            if (groupCompare == 0) return false;
+                            return ascending ? groupCompare < 0 : groupCompare > 0;
                         });
                 }
                 sortSpecs->SpecsDirty = false;
@@ -430,11 +537,7 @@ namespace UpgradeValue
 
             for (const auto& row : rows)
             {
-                if (!ContainsInsensitive(row.upgradeName, searchBuffer_.data()) &&
-                    !ContainsInsensitive(row.gearName, searchBuffer_.data()) &&
-                    !ContainsInsensitive(row.location, searchBuffer_.data())) continue;
-
-                const int selectedValue = settings_.useNetListing ? row.netListing : row.instantSell;
+                const int selectedValue = SelectedValue(row, useNetListing);
                 const char* recommendation = nullptr;
                 ImVec4 recommendationColor(0.75f, 0.75f, 0.75f, 1.0f);
 

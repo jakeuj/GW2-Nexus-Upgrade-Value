@@ -70,11 +70,16 @@ Any new network destination, permission, persisted account data, updater, hook, 
 
 ## Results-table contract
 
-- Preserve value-first ordering as the unsorted state.
+- Filter search results before applying display ordering.
+- Derive the active decision value from the current recommendation mode: use `Instant sell` when net listing is disabled and `Net listing` when it is enabled. Sort that value descending globally and within every Location group; zero or unavailable values therefore remain at the end.
+- Break equal decision values deterministically by full Location, Upgrade name, Equipment name, upgrade ID, then equipment ID.
+- Derive the Location group from its visible owner or storage area: collapse `Account Bank #n` to `Account Bank`, collapse `Shared Inventory #n` to `Shared Inventory`, use the prefix before ` / ` for character locations, and fall back to the complete Location for unknown formats.
+- Preserve global active-value ordering as the unsorted state.
 - Limit user sorting to the Location column unless a requested change explicitly expands the table contract.
 - Keep Location sorting tri-state: ascending, descending, then unsorted.
-- Compare the full location string and use stable sorting so equal locations retain their existing value order.
+- Sort Location by its visible group name; descending reverses group order only. Use stable sorting so every group retains active-value-descending order.
 - Apply the selected sort after search filtering without resetting the sort direction.
+- Re-evaluate display ordering immediately when the recommendation mode changes; changing the mode must not require another API scan.
 
 ## Version and release checklist
 
@@ -102,7 +107,7 @@ After a build-affecting change or before release, verify on Windows with Guild W
 5. With the stock Inter font, verify English default, disabled Traditional Chinese, readable CJK guidance, and migration from a persisted `chineseUi: true`.
 6. With a locally supplied CJK-capable Nexus font, switch between English and Traditional Chinese, restart, and inspect glyph rendering. Do not commit or distribute the font.
 7. Start a Chinese refresh and switch back to a non-CJK font; confirm cancellation, immediate English fallback, cleared stale rows, and one final English result set.
-8. Verify Location ascending, descending, unsorted restoration, equal-location stability, and search-filter persistence.
+8. Verify Location group ascending, group descending, global-value restoration, per-group value priority, selected-value switching, deterministic ties, and search-filter persistence.
 9. Refresh data and verify bank, shared inventory, character inventory/equipment, price columns, and recommendations.
 10. Unload or reload during a scan and confirm the worker exits and registrations/fonts are released cleanly.
 

@@ -60,9 +60,11 @@ Record pass/fail evidence for:
    - Start a Chinese refresh, immediately switch Nexus back to a non-CJK font, and wait beyond the slowest expected request.
    - Confirm immediate English fallback, stale-row clearing, cancelled Chinese work, and one final English result set.
 5. **Location sorting**
-   - Capture the default first rows.
-   - Verify ascending, descending, and third-click restoration.
-   - Confirm equal locations retain their value order.
+   - Capture the default first rows and confirm they follow the active decision value globally.
+   - Verify ascending groups, descending groups, and third-click global-value restoration.
+   - Confirm account bank, shared inventory, and each character form distinct groups whose rows remain active-value descending.
+   - Toggle the net-listing decision mode and confirm immediate global and per-group reordering without a refresh.
+   - Confirm zero values sort last and equal values use the deterministic Location, Upgrade, Equipment, and ID tie-breakers.
    - Apply and clear a search filter without losing the selected direction.
 6. **General smoke**
    - Save and reload the protected key.

@@ -264,6 +264,53 @@ def main() -> int:
         "Location-only stable sorting is missing or another column became sortable",
         errors,
     )
+    require(
+        "LocationGroupKey" in app
+        and 'location.rfind("Account Bank #", 0)' in app
+        and 'location.rfind("Shared Inventory #", 0)' in app
+        and 'location.find(" / ")' in app
+        and "return location;" in app,
+        "Location grouping no longer covers account bank, shared inventory, characters, and unknown fallbacks",
+        errors,
+    )
+    require(
+        "SelectedValue" in app
+        and "useNetListing ? row.netListing : row.instantSell" in app
+        and "ValueOrderLess" in app
+        and "aValue > bValue" in app,
+        "display ordering no longer follows the selected recommendation value descending",
+        errors,
+    )
+    tie_breakers = (
+        "a.location != b.location",
+        "a.upgradeName != b.upgradeName",
+        "a.gearName != b.gearName",
+        "a.upgradeId != b.upgradeId",
+        "a.gearId < b.gearId",
+    )
+    tie_positions = [app.find(token) for token in tie_breakers]
+    require(
+        all(position >= 0 for position in tie_positions)
+        and tie_positions == sorted(tie_positions),
+        "selected-value ties no longer use the deterministic Location/Upgrade/Equipment/ID order",
+        errors,
+    )
+    filter_position = app.find("rows.erase(std::remove_if")
+    value_sort_position = app.find("std::sort(rows.begin(), rows.end()")
+    group_sort_position = app.find("std::stable_sort(rows.begin(), rows.end()")
+    require(
+        0 <= filter_position < value_sort_position < group_sort_position
+        and "LocationGroupKey(a.location)" in app
+        and "NaturalNameCompare" in app,
+        "search filtering, selected-value sorting, and Location group sorting are no longer applied in the required order",
+        errors,
+    )
+    require(
+        "std::max(a.instantSell, a.netListing)" not in gw2_api
+        and "std::max(b.instantSell, b.netListing)" not in gw2_api,
+        "legacy max(Instant sell, Net listing) scan ordering returned",
+        errors,
+    )
 
     project = files["UpgradeValue.vcxproj"]
     require("<LanguageStandard>stdcpp17</LanguageStandard>" in project, "project is not configured for C++17", errors)
