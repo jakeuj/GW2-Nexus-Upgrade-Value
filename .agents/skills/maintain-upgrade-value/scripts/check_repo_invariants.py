@@ -12,9 +12,11 @@ from pathlib import Path
 REQUIRED_FILES = (
     "src/entry.cpp",
     "src/App.cpp",
+    "src/App.h",
     "src/Gw2Api.cpp",
     "src/HttpClient.cpp",
     "src/Settings.cpp",
+    "src/Settings.h",
     "vendor/nexus/Nexus.h",
     "UpgradeValue.vcxproj",
     ".github/workflows/build-and-release.yml",
@@ -191,6 +193,7 @@ def main() -> int:
         require(f"`{api_version}`" in text, f"{name} does not mention Nexus API version {api_version}", errors)
 
     app = files["src/App.cpp"]
+    app_header = files["src/App.h"]
     lifecycle_pairs = (
         ("Renderer.Register", "Renderer.Deregister", entry),
         ("InputBinds.RegisterWithString", "InputBinds.Deregister", entry),
@@ -207,13 +210,60 @@ def main() -> int:
     require('L"Authorization: Bearer "' in http, "bearer Authorization header is missing", errors)
 
     settings = files["src/Settings.cpp"]
+    settings_header = files["src/Settings.h"]
     require("CryptProtectData" in settings, "DPAPI encryption is missing", errors)
     require("CryptUnprotectData" in settings, "DPAPI decryption is missing", errors)
+    require(
+        "bool chineseUi = false;" in settings_header,
+        "new installations must default chineseUi to false",
+        errors,
+    )
+    require(
+        'data.value("chineseUi", false)' in settings,
+        "missing chineseUi settings must load as false",
+        errors,
+    )
 
     gw2_api = files["src/Gw2Api.cpp"]
     require("ToTraditionalChinese" in gw2_api, "Traditional Chinese conversion is missing", errors)
     require('L"&lang=zh"' in gw2_api, "GW2 API lang=zh behavior is missing", errors)
     require('"FONT_DEFAULT"' in app, "Nexus FONT_DEFAULT use is missing", errors)
+    require(
+        "FontSupportsTraditionalChinese" in app_header
+        and "FindGlyphNoFallback" in app,
+        "Traditional Chinese UI is not guarded by actual FONT_DEFAULT glyph coverage",
+        errors,
+    )
+    require(
+        '"##UpgradeValueLanguage"' in app
+        and 'ImGui::TextUnformatted("Language")' in app
+        and '"Traditional Chinese (CJK font required)"' in app
+        and "ImGuiSelectableFlags_Disabled" in app
+        and '"Choose a CJK-capable font in Nexus Options > Style' in app,
+        "fixed ASCII language selector, disabled CJK state, or font guidance is missing",
+        errors,
+    )
+    require(
+        "scanGeneration_" in app_header
+        and "refreshPending_" in app_header
+        and "QueueRefresh()" in app,
+        "language/font changes no longer invalidate and requeue background scans",
+        errors,
+    )
+    require(
+        "ImGuiTableFlags_Sortable" in app
+        and "ImGuiTableFlags_SortTristate" in app
+        and "ImGui::TableGetSortSpecs()" in app,
+        "tri-state table sorting is missing",
+        errors,
+    )
+    require(
+        "LocationColumnId" in app
+        and "std::stable_sort" in app
+        and app.count("ImGuiTableColumnFlags_NoSort") >= 6,
+        "Location-only stable sorting is missing or another column became sortable",
+        errors,
+    )
 
     project = files["UpgradeValue.vcxproj"]
     require("<LanguageStandard>stdcpp17</LanguageStandard>" in project, "project is not configured for C++17", errors)

@@ -93,7 +93,7 @@ namespace UpgradeValue
             settings.useNetListing = data.value("useNetListing", false);
             settings.includeInfusions = data.value("includeInfusions", false);
             settings.showWindow = data.value("showWindow", true);
-            settings.chineseUi = data.value("chineseUi", true);
+            settings.chineseUi = data.value("chineseUi", false);
         }
         catch (...) {}
 

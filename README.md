@@ -7,7 +7,7 @@
 
 Scan Exotic equipment across your Guild Wars 2 account, list embedded runes and sigils with live Trading Post prices, and decide whether they are worth extracting with a Black Lion Salvage Kit.
 
-Current stable release: [**v1.0.3**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.3)
+Current stable release: [**v1.0.4**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.4)
 
 Project website: [gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
 
@@ -27,7 +27,7 @@ Codex assisted with project documentation and development review. This assistanc
 ## Manual download
 
 - [Download `UpgradeValue.dll` directly](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
-- [Download `UpgradeValue-v1.0.3.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.3/UpgradeValue-v1.0.3.zip)
+- [Download `UpgradeValue-v1.0.4.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.4/UpgradeValue-v1.0.4.zip)
 - [View all releases and release notes](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
 
 > [!IMPORTANT]
@@ -46,21 +46,23 @@ Codex assisted with project documentation and development review. This assistanc
 
 ### Upgrade values and salvage recommendations
 
-![Upgrade Value main window](screenshots/upgrade-value-main.png)
+![Upgrade Value main window with Location sorted in ascending order](screenshots/upgrade-value-main.png)
 
-The main window lists embedded upgrades, their equipment and location, instant-sell prices, lowest listings, and listing values after the 15% Trading Post fee.
+The main window lists embedded upgrades, their equipment and location, instant-sell prices, lowest listings, and listing values after the 15% Trading Post fee. Select the **Location** header to group results by character or storage location.
 
 ### Nexus settings
 
-![Upgrade Value Nexus settings](screenshots/upgrade-value-settings.png)
+![Upgrade Value Nexus settings with English selected and Traditional Chinese disabled because the current font lacks CJK glyphs](screenshots/upgrade-value-settings.png)
 
-Enter an API key, enable Traditional Chinese, choose whether to display infusions, and configure the keybind in the Nexus settings.
+Enter an API key, choose English or Traditional Chinese when the current Nexus font supports it, choose whether to display infusions, and configure the keybind in the Nexus settings.
 
 ## Features
 
 - Scans the account bank, shared inventory slots, every character's bags, and currently equipped items.
 - Reads embedded runes and sigils from each item instance's `upgrades[]` field.
-- Traditional Chinese mode requests official API names with `lang=zh` and converts them to Traditional Chinese through Windows; English mode uses the official English names.
+- English is the default interface language. Traditional Chinese mode requests official API names with `lang=zh` and converts them to Traditional Chinese through Windows.
+- Before enabling Traditional Chinese, the addon checks whether Nexus `FONT_DEFAULT` provides representative CJK glyphs. If not, it uses English and points the user to the Nexus font setting instead of displaying `?`.
+- The **Location** column supports ascending, descending, and original value-order sorting while keeping equal locations stable.
 - Queries the official `/v2/commerce/prices` endpoint in batches:
   - `Instant sell`: current highest buy order.
   - `Listing`: current lowest sell listing.
@@ -70,7 +72,7 @@ Enter an API key, enable Traditional Chinese, choose whether to display infusion
 - Can display infusion prices. Black Lion Salvage Kits do not recover infusions, so the addon never recommends using one for them.
 - Encrypts the API key with Windows DPAPI before saving it locally; the key is never stored in plaintext.
 - Performs all network requests in the background without blocking the game.
-- Uses the complete Chinese glyph range from Nexus `FONT_DEFAULT` to prevent Traditional Chinese text from appearing as `?`.
+- Acquires and releases Nexus `FONT_DEFAULT`; actual Traditional Chinese availability depends on the selected Nexus font containing CJK glyphs.
 
 ## Important distinctions
 
@@ -107,7 +109,8 @@ Do not place it inside the `addons\Nexus` subdirectory.
 2. Select **Refresh** to retrieve the current account equipment and latest Trading Post prices.
 3. Set the **Black Lion threshold (silver)**; the default is 50 silver.
 4. Enable **Use net listing value** to base recommendations on the net listing value; otherwise, the addon uses the instant-sell value.
-5. Use the search field to filter by equipment, upgrade name, or location.
+5. Select the **Location** header to cycle through ascending, descending, and original value order.
+6. Use the search field to filter by equipment, upgrade name, or location.
 
 The Recommendation column may display:
 
@@ -133,7 +136,7 @@ The repository includes the Nexus API header, the Raidcore ImGui fork, and nlohm
 ## CI/CD and releases
 
 - [Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml) automatically runs a Windows x64 Release build and uploads artifacts when changes are pushed to `main` or a pull request is created.
-- Pushing a tag that matches `v*`, such as `v1.0.3`, automatically creates a GitHub Release with the DLL and ZIP files.
+- Pushing a tag that matches `v*`, such as `v1.0.4`, automatically creates a GitHub Release with the DLL and ZIP files.
 - You can also open **Actions → Build and release → Run workflow** and enter a version to publish manually. The version must match the addon version in `src/entry.cpp`.
 - GitHub Release Notes are generated automatically from the commits included in the release.
 

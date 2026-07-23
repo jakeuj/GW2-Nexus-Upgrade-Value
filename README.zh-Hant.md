@@ -7,7 +7,7 @@
 
 在遊戲內掃描帳號中的橘色裝備（`Exotic`），列出內嵌的符文、印記與即時 Trading Post 價格，用來判斷是否值得消耗黑獅分解工具。
 
-目前正式版：[**v1.0.3**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.3)
+目前正式版：[**v1.0.4**](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.4)
 
 專案網站：[gw2-value.jakeuj.com](https://gw2-value.jakeuj.com/)
 
@@ -27,7 +27,7 @@ Codex 曾協助專案文件與開發審查。此項協助會依 Raidcore 的 **A
 ## 手動下載
 
 - [直接下載 `UpgradeValue.dll`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/latest/download/UpgradeValue.dll)
-- [下載 `UpgradeValue-v1.0.3.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.3/UpgradeValue-v1.0.3.zip)
+- [下載 `UpgradeValue-v1.0.4.zip`](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/download/v1.0.4/UpgradeValue-v1.0.4.zip)
 - [查看所有版本與更新內容](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases)
 
 > [!IMPORTANT]
@@ -46,21 +46,23 @@ Codex 曾協助專案文件與開發審查。此項協助會依 Raidcore 的 **A
 
 ### 升級價格與分解建議
 
-![Upgrade Value 主視窗](screenshots/upgrade-value-main.png)
+![Upgrade Value 主視窗，位置欄目前為升冪排序](screenshots/upgrade-value-main.png)
 
-主視窗會列出內嵌升級、所在裝備與位置，以及立即賣、最低掛單和扣除 15% 交易所費用後的掛單價值。
+主視窗會列出內嵌升級、所在裝備與位置，以及立即賣、最低掛單和扣除 15% 交易所費用後的掛單價值。點擊「位置」欄標題可按角色或儲存位置集中查看結果。
 
 ### Nexus 設定
 
-![Upgrade Value Nexus 設定](screenshots/upgrade-value-settings.png)
+![Upgrade Value Nexus 設定，已選擇英文，且目前字型缺少 CJK 字形而停用繁體中文](screenshots/upgrade-value-settings.png)
 
-可在 Nexus 設定中輸入 API Key、開啟繁體中文、選擇是否顯示灌注，並調整快捷鍵。
+可在 Nexus 設定中輸入 API Key、選擇英文或目前 Nexus 字型支援的繁體中文、選擇是否顯示灌注，並調整快捷鍵。
 
 ## 功能
 
 - 掃描帳號銀行、共享物品欄、所有角色背包及目前裝備。
 - 從物品實例的 `upgrades[]` 讀取內嵌符文／印記。
-- 中文模式會使用官方 API 的 `lang=zh` 名稱，再以 Windows 轉換為繁體中文；英文模式則使用官方英文名稱。
+- 介面預設使用英文；繁中模式會使用官方 API 的 `lang=zh` 名稱，再以 Windows 轉換為繁體中文。
+- 啟用繁中前會檢查 Nexus `FONT_DEFAULT` 是否真的包含代表性 CJK 字形；若缺字則使用英文並引導使用者調整 Nexus 字型，不再顯示整片 `?`。
+- 「位置」欄支援升冪、降冪與恢復原始價值順序；相同位置會保留原本相對順序。
 - 批次查詢官方 `/v2/commerce/prices`：
   - `立即賣`：目前最高收購價。
   - `掛單`：目前最低出售價。
@@ -70,7 +72,7 @@ Codex 曾協助專案文件與開發審查。此項協助會依 Raidcore 的 **A
 - 可選擇顯示灌注價格；灌注不會被黑獅分解工具取回，因此永遠不會建議用黑獅處理。
 - API Key 以 Windows DPAPI 加密後才寫入本機，不以明文保存。
 - 所有網路請求均在背景執行，不阻塞遊戲畫面。
-- 使用 Nexus `FONT_DEFAULT` 的完整中文字形範圍，避免繁中文字被顯示成 `?`。
+- 取得並在卸載時釋放 Nexus `FONT_DEFAULT`；是否能使用繁中取決於目前選用的 Nexus 字型是否實際含有 CJK 字形。
 
 ## 重要差異
 
@@ -107,7 +109,8 @@ F:\SteamLibrary\steamapps\common\Guild Wars 2\addons\UpgradeValue.dll
 2. 按「重新掃描」取得目前帳號裝備及最新交易所價格。
 3. 設定「黑獅門檻（銀）」，預設為 50 銀。
 4. 選擇用「立即賣」或「扣稅掛單價」判斷。
-5. 使用搜尋欄按裝備、升級名稱或所在位置過濾結果。
+5. 點擊「位置」欄標題，在升冪、降冪與原始價值順序間切換。
+6. 使用搜尋欄按裝備、升級名稱或所在位置過濾結果。
 
 建議欄可能顯示：
 
@@ -133,7 +136,7 @@ msbuild UpgradeValue.sln /m /p:Configuration=Release /p:Platform=x64
 ## CI/CD 與發行
 
 - [Build and release](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/workflows/build-and-release.yml) 會在推送到 `main` 或建立 Pull Request 時，自動執行 Windows x64 Release 建置並上傳 Artifact。
-- 推送符合 `v*` 的 tag（例如 `v1.0.3`）時，會自動建立 GitHub Release，並附上 DLL 與 ZIP。
+- 推送符合 `v*` 的 tag（例如 `v1.0.4`）時，會自動建立 GitHub Release，並附上 DLL 與 ZIP。
 - 也可以從 **Actions → Build and release → Run workflow** 輸入版本號手動發行；版本必須與 `src/entry.cpp` 的插件版本一致。
 - GitHub Release Notes 會根據此次發行包含的 commits 自動產生。
 

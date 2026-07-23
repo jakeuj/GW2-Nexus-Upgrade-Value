@@ -2,6 +2,7 @@
 
 #include <array>
 #include <atomic>
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -31,11 +32,17 @@ namespace UpgradeValue
 
     private:
         void RefreshAsync();
+        void QueueRefresh();
+        void ProcessPendingRefresh();
+        void ApplyLanguage(bool chinese);
+        void EnsureLanguageSupported();
+        void ClearRowsForLanguageRefresh();
         void SaveSettings(bool refreshAfterSave);
         void JoinWorker();
         void RenderRowTooltip(const ResultRow& row, int selectedValue) const;
 
         const char* T(const char* chinese, const char* english) const;
+        static bool FontSupportsTraditionalChinese();
         static std::string Coins(int copper);
         static bool ContainsInsensitive(const std::string& value, const char* query);
 
@@ -45,9 +52,11 @@ namespace UpgradeValue
         std::array<char, 256> apiKeyBuffer_{};
         std::array<char, 128> searchBuffer_{};
         bool revealApiKey_ = false;
+        bool refreshPending_ = false;
 
         std::atomic<bool> refreshing_{false};
         std::atomic<bool> stopRequested_{false};
+        std::atomic<uint64_t> scanGeneration_{0};
         std::thread worker_;
         mutable std::mutex resultMutex_;
         std::vector<ResultRow> rows_;
@@ -55,6 +64,7 @@ namespace UpgradeValue
         std::string status_;
         std::string error_;
         std::string settingsMessage_;
+        std::string languageWarning_;
         static void* cjkFont_;
     };
 }

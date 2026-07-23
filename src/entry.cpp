@@ -73,7 +73,7 @@ extern "C" __declspec(dllexport) AddonDefinition* GetAddonDef()
     Definition.Signature = AddonSignature;
     Definition.APIVersion = NEXUS_API_VERSION;
     Definition.Name = "Upgrade Value";
-    Definition.Version = {1, 0, 3, 0};
+    Definition.Version = {1, 0, 4, 0};
     Definition.Author = "jakeuj";
     Definition.Description = "Find embedded runes and sigils in Exotic gear and compare live Trading Post prices.";
     Definition.Load = Load;

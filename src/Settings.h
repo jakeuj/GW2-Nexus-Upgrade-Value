@@ -13,7 +13,7 @@ namespace UpgradeValue
         bool useNetListing = false;
         bool includeInfusions = false;
         bool showWindow = true;
-        bool chineseUi = true;
+        bool chineseUi = false;
     };
 
     class SettingsStore
