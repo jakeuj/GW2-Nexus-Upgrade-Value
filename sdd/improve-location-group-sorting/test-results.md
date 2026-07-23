@@ -5,7 +5,7 @@
 ## 本機靜態驗證
 
 - Repository invariant checker：Pass（`1.0.5.0`）
-- GW2 website audit：Pass（0 errors、0 warnings；first-fold images 203,013／256,000 bytes）
+- GW2 website audit：Pass（0 errors、0 warnings；first-fold images 223,967／256,000 bytes）
 - JavaScript syntax：Pass
 - XML validation：Pass
 - Python checker AST：Pass
@@ -57,12 +57,14 @@ CrossOver 最初載入並執行遊戲內排序驗收的是 [run 29991515059](htt
 
 ## 正式發布驗證
 
-- Release：Pending
-- Tag workflow：Pending
-- Tag commit：Pending
-- Release 資產：Pending
-- 正式 DLL SHA-256：Pending
-- ZIP SHA-256：Pending
-- latest-download SHA-256：Pending
-- GitHub Pages：Pending
-- Issue #10：保持開啟至 Release 與 latest-download 驗證完成。
+- Release：[v1.0.5](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.5)
+- Tag workflow：[run 29993546975](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/runs/29993546975) 成功
+- Annotated tag commit：`83b694f2c3ea7b193d267c45a423adace1ef4ab2`
+- Release 資產：僅 `UpgradeValue.dll` 與 `UpgradeValue-v1.0.5.zip`
+- 正式 DLL：731,648 bytes、PE32+ x86-64 Windows DLL（COFF x86-64），匯出 `GetAddonDef`
+- 正式 DLL SHA-256：`7bc7d062ea6c9ff1a5bfed87781b18b7ce388a02a88559b2df1f95db9864d641`
+- ZIP SHA-256：`de120d5ab84800e40fc6576833a2c3315779b03ca2701cb826a776afb6ee38e6`
+- ZIP：只包含一份 `UpgradeValue.dll`，其 SHA-256 與正式 DLL 相同
+- latest-download：SHA-256 與正式 DLL 相同
+- GitHub Pages：[run 29993327798](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/runs/29993327798) 成功；正式站顯示 `v1.0.5`、新版排序說明與真實遊戲截圖，1280px 無水平溢位
+- Follow-up issue：[Issue #10](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/issues/10) 已留下發布與驗證紀錄並關閉。

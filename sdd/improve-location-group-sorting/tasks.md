@@ -8,7 +8,7 @@
 - [x] 6. 建立 follow-up issue 與 Draft PR，以 Windows CI 建置並驗證 DLL。
 - [x] 7. 在 CrossOver 載入 CI DLL，完成排序、估價切換、語言、API Key 與生命週期驗收。
 - [x] 8. 更新真實遊戲截圖、衍生圖片與測試紀錄，完成合併前驗證。
-- [ ] 9. 發布 `v1.0.5`，確認 Release、latest download、GitHub Pages 並關閉 follow-up issue。
+- [x] 9. 發布 `v1.0.5`，確認 Release、latest download、GitHub Pages 並關閉 follow-up issue。
 
 ## 驗收條件
 
