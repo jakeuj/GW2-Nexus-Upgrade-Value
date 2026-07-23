@@ -40,3 +40,18 @@ CrossOver 驗收由維護者完成並確認可發布。測試設定、加密 API
 
 - Settings：英文已選取、Traditional Chinese 因 CJK 字形不足而停用，並顯示 Nexus Options → Style 提示。
 - Main：Location 升冪箭頭與依角色／儲存位置集中後的實際資料列。
+
+## 正式發布驗證
+
+- Release：[v1.0.4](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/releases/tag/v1.0.4)
+- Tag workflow：[run 29988417092](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/actions/runs/29988417092)
+- Tag commit：`a29db4042c77cc775a745ad5e4bf9f0b269f1be5`
+- Release 資產恰好為 `UpgradeValue.dll` 與 `UpgradeValue-v1.0.4.zip`。
+- 正式 DLL：729,600 bytes、PE32+ x86-64、匯出 `GetAddonDef`。
+- 正式 DLL SHA-256：`58fa25dd4ccd7d024ad5e9d492e628533a295310901c214a788b32ab7cd15ead`
+- ZIP SHA-256：`6b78c9e73b1d154d3e87fd82d0db302d546dca20b198c1c2805af23e33722481`
+- ZIP 只包含一份 `UpgradeValue.dll`，其 SHA-256 與獨立 DLL 相同。
+- `releases/latest/download/UpgradeValue.dll` 解析出的檔案與正式 DLL SHA-256 相同。
+- [Issue #7](https://github.com/jakeuj/GW2-Nexus-Upgrade-Value/issues/7) 已回覆修復內容、下載方式並以 Completed 關閉。
+
+發布時 Guild Wars 2／CrossOver 仍在執行，因此未強制關閉遊戲並熱替換已載入的 DLL；正式資產改以格式、匯出、ZIP 內容與 latest-download digest 驗證。完整遊戲內驗收已於發布前針對同一合併內容完成。
